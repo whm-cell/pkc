@@ -1,0 +1,28 @@
+server:
+  port: 1234
+
+spring:
+  thymeleaf:
+    encoding: UTF-8
+    cache: false
+
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://39.106.103.58:3306/easy_web?useSSL=false&serverTimezone=UTC
+    username: root
+    password: cywhm521
+
+  redis:
+    host: 39.106.103.58
+    port: 6379
+    password:
+  application:
+    name: oauth
+
+logging.level.org.springframework.security: DEBUG
+swagger:
+  enable: true
+  application-name: ${spring.application.name}
+  application-version: 1.0
+  application-description: springfox swagger 3.0整合Demo
+  try-host: http://localhost:${server.port}
