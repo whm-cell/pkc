@@ -28,6 +28,16 @@ import java.security.spec.X509EncodedKeySpec;
 @Component
 public class EnDecoderUtil {
 
+    /**
+     * • ECB：Electronic Code Book（电子码本模式）
+     * • CBC：Cipher Block Chaining（密码块链模式）
+     * • CTR：Counter（计数器模式）
+     *
+     * 此外，还有其他的一些模式，本文中将不做介绍。
+     * • CFB：Cipher Feedback（密码反馈模式）
+     * • OFB：Output Feedback（输出反馈模式）
+     */
+
     private static final String ALGORITHM_RSA = "RSA";
     private static final String ALGORITHM_DES = "DES";
     private static final String ALGORITHM_DES_MODE = "DES/CBC/PKCS5Padding";
@@ -68,12 +78,20 @@ public class EnDecoderUtil {
 
         try{
             Cipher cipher = Cipher.getInstance(model.getBuildMode());
+
             DESKeySpec desKeySpec = new DESKeySpec(model.getKey().getBytes(model.getCharacterSet()));
 
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(model.getType());
             SecretKey secretKey = keyFactory.generateSecret(desKeySpec);
-            IvParameterSpec iv = new IvParameterSpec(model.getKey().getBytes(model.getCharacterSet()));
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
+            String mode = model.getBuildMode();
+
+            //  这种模式不可用（iv 自定义参数）
+            if("DES/ECB/PKCS5Padding".equals(mode)){
+                cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            }else{
+                IvParameterSpec iv = new IvParameterSpec(model.getKey().getBytes(model.getCharacterSet()));
+                cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
+            }
 
             return toHexString(cipher.doFinal(model.getContext().getBytes(model.getCharacterSet())));
         }catch (Exception e){

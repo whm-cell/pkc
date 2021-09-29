@@ -148,6 +148,10 @@ public class DenseController implements Initializable {
 
         respoText.setWrapText(true);
 
+//        filling.setDisable(true);
+//
+//        encryptionMode.setDisable(true);
+
     }
 
     private void initSelectContext() {
@@ -162,13 +166,13 @@ public class DenseController implements Initializable {
 
 
         ArrayList<Object> fill  = Lists.newArrayList();
-        fill.add("pkcs5padding");
-        fill.add("pkcs7padding");
+        fill.add("PKCS5Padding");
+        fill.add("PKCS7Padding");
         fill.add("zeropadding");
         fill.add("iso10126");
         fill.add("ansix923");
         fill.add("no padding");
-        filling.setValue("pkcs5padding");
+        filling.setValue("PKCS5Padding");
         filling.getItems().setAll(fill);
 
         ArrayList<Object> outp  = Lists.newArrayList();
