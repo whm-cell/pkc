@@ -114,6 +114,8 @@ public class DenseController implements Initializable {
             //清空错误信息
             errorText.setText("");
         }catch (Exception e){
+            respoText.setText("暂无结果");
+            respoText.setStyle("-fx-text-fill:pink");
             errorText.setText(e.getMessage());
         }
     }

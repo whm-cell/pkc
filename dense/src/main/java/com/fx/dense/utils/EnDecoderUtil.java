@@ -37,6 +37,9 @@ public class EnDecoderUtil {
      * • CFB：Cipher Feedback（密码反馈模式）
      * • OFB：Output Feedback（输出反馈模式）
      */
+    static {
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+    }
 
     private static final String ALGORITHM_RSA = "RSA";
     private static final String ALGORITHM_DES = "DES";
@@ -69,6 +72,15 @@ public class EnDecoderUtil {
         System.out.println(utf8);
     }
 
+    private static final String fill_pkc7 = "PKCS7Padding";
+
+    private static final String fill_pkc5 = "PKCS5Padding";
+
+    private static final String DOES_NOT_SUPPORT_IV = "DES/ECB/PKCS5Padding";
+
+    private static final String mode_ecb = "ECB";
+
+
     /**
      * des加密
      * @param model
@@ -86,7 +98,7 @@ public class EnDecoderUtil {
             String mode = model.getBuildMode();
 
             //  这种模式不可用（iv 自定义参数）
-            if("DES/ECB/PKCS5Padding".equals(mode)){
+            if(mode_ecb.equals(model.getEncryptionMode())){
                 cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             }else{
                 IvParameterSpec iv = new IvParameterSpec(model.getKey().getBytes(model.getCharacterSet()));
