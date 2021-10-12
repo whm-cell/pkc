@@ -4,7 +4,9 @@ import com.fx.dense.common.RestResult;
 import com.fx.dense.enums.Response;
 import com.fx.dense.enums.ResponseEnum;
 
-
+/**
+ * @author Administrator
+ */
 public class BusinessException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 

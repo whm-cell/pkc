@@ -1,5 +1,6 @@
 package com.fx.dense.utils;
 
+import com.fx.dense.base.Const;
 import com.fx.dense.error.ErrorMessage;
 import com.fx.dense.exception.BusinessException;
 import com.fx.dense.model.DesRequestModel;
@@ -23,10 +24,13 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
- * @author Administrator
- */
+ * @program: pkc
+ * @description: des加密类
+ * @author: WangHaiMing
+ * @create: 2021-10-08 16:00
+ **/
 @Component
-public class EnDecoderUtil {
+public class DesUtil {
 
     /**
      * • ECB：Electronic Code Book（电子码本模式）
@@ -42,35 +46,6 @@ public class EnDecoderUtil {
     }
 
     private static final String ALGORITHM_RSA = "RSA";
-    private static final String ALGORITHM_DES = "DES";
-    private static final String ALGORITHM_DES_MODE = "DES/CBC/PKCS5Padding";
-
-    public static String rsaPublicKey;
-    public static String rsaPrivateKey;
-
-    public static String desSecretKey;
-
-    @Value("${rsa.publicKey}")
-    private void setRsaPublicKey(String publicKey) {
-        rsaPublicKey = publicKey;
-    }
-
-    @Value("${rsa.privateKey}")
-    private void setRsaPrivateKey(String privateKey) {
-        rsaPrivateKey = privateKey;
-    }
-
-    @Value("${des.secretKey}")
-    private void setDesSecretKey(String secretKey) {
-        desSecretKey = secretKey;
-    }
-
-
-
-    public static void main(String[] args) {
-        Charset utf8 = StandardCharsets.UTF_8;
-        System.out.println(utf8);
-    }
 
     private static final String fill_pkc7 = "PKCS7Padding";
 
@@ -95,17 +70,53 @@ public class EnDecoderUtil {
 
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(model.getType());
             SecretKey secretKey = keyFactory.generateSecret(desKeySpec);
-            String mode = model.getBuildMode();
 
             //  这种模式不可用（iv 自定义参数）
             if(mode_ecb.equals(model.getEncryptionMode())){
-                cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            }else{
-                IvParameterSpec iv = new IvParameterSpec(model.getKey().getBytes(model.getCharacterSet()));
-                cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
-            }
+                if(model.getIsItEncrypted() == Const.ENCRYPT_OR_DECRYPT[0]){
+                    cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+                    byte[] doFinal = cipher.doFinal(model.getContext().getBytes(model.getCharacterSet()));
+                    if (model.getOutput().equals(Const.Base64)) {
+                        BASE64Encoder encoder = new BASE64Encoder();
+                        String encode = encoder.encode(doFinal);
+                        return encode;
+                    }
+                    return toHexString(doFinal);
+                }else {
+                    cipher.init(Cipher.DECRYPT_MODE, secretKey);
+                    byte[] bytes = convertHexString(model.getContext());
+                    byte[] retByte = cipher.doFinal(bytes);
+                    if (model.getOutput().equals(Const.Base64)) {
+                        BASE64Encoder encoder = new BASE64Encoder();
+                        String encode = encoder.encode(retByte);
+                        return encode;
+                    }
+                    return new String(retByte);
+                }
 
-            return toHexString(cipher.doFinal(model.getContext().getBytes(model.getCharacterSet())));
+            }else{
+                IvParameterSpec iv = new IvParameterSpec(ArrayUtil.byte16CompletionIv(model.getIvOffset(),model.getCharacterSet(),Const.LENGTH_OF_THE_COMPLETION_BYTE[0]));
+                if(model.getIsItEncrypted() == Const.ENCRYPT_OR_DECRYPT[0]){
+                    cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
+                    byte[] doFinal = cipher.doFinal(model.getContext().getBytes(model.getCharacterSet()));
+                    if (model.getOutput().equals(Const.Base64)) {
+                        BASE64Encoder encoder = new BASE64Encoder();
+                        String encode = encoder.encode(doFinal);
+                        return encode;
+                    }
+                    return toHexString(doFinal);
+                }else {
+                    cipher.init(Cipher.DECRYPT_MODE, secretKey, iv);
+                    byte[] bytes = convertHexString(model.getContext());
+                    byte[] retByte = cipher.doFinal(bytes);
+                    if (model.getOutput().equals(Const.Base64)) {
+                        BASE64Encoder encoder = new BASE64Encoder();
+                        String encode = encoder.encode(retByte);
+                        return encode;
+                    }
+                    return new String(retByte);
+                }
+            }
         }catch (Exception e){
             e.printStackTrace();
             throw new BusinessException(e.getMessage());

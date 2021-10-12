@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author Administrator
  */
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DesRequestModel {
+public class AesRequestModel {
 
     private String type;
 
@@ -35,6 +37,10 @@ public class DesRequestModel {
      */
     private int isItEncrypted;
 
+    /**
+     * 数据块
+     */
+    private String dataBlock;
 
     public String getBuildMode(){
         return this.type+"/"+this.getEncryptionMode()+"/"+this.getFilling();

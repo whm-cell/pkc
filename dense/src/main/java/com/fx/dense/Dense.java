@@ -11,8 +11,11 @@ import java.net.URL;
 import java.util.Objects;
 
 /**
- * @author Administrator
- */
+ * @program: pkc
+ * @description: 主启动文件
+ * @author: WangHaiMing
+ * @create: 2021-10-08 16:00
+ **/
 public class Dense extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{

@@ -3,7 +3,6 @@ package com.fx.dense.enums;
 /**
  * @author Administrator
  */
-
 public enum Response {
 
     /**
