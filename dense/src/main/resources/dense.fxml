@@ -13,7 +13,7 @@
 
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="644.0" prefWidth="1129.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fx.dense.controller.DenseController">
   <tabs>
-    <Tab text="DES简易工具">
+    <Tab text="DES">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="540.0" prefWidth="879.0" style="-fx-background-color: #D9EDF7;">
                <children>
@@ -51,8 +51,8 @@
                      <children>
                         <Label layoutX="14.0" layoutY="17.0" text="DES加密、解密转换结果(base64了)：" />
                         <TextArea fx:id="respoText" layoutX="19.0" layoutY="33.0" prefHeight="235.0" prefWidth="1105.0" promptText="result..." />
-                        <Button fx:id="en" layoutX="406.0" layoutY="6.0" mnemonicParsing="false" onAction="#enMethod" text="des加密" />
-                        <Button fx:id="de" layoutX="489.0" layoutY="6.0" mnemonicParsing="false" onAction="#deMethod" text="des解密" />
+                        <Button fx:id="en" layoutX="406.0" layoutY="6.0" mnemonicParsing="false" onAction="#enMethod" text="DES加密" />
+                        <Button fx:id="de" layoutX="489.0" layoutY="6.0" mnemonicParsing="false" onAction="#deMethod" text="DES解密" />
                         <Button fx:id="copyResult" layoutX="569.0" layoutY="6.0" mnemonicParsing="false" onAction="#copyResultMethod" text="复制结果" />
                         <Text fx:id="errorText" fill="#fa0000" layoutX="650.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="460.240234375" />
                      </children>
@@ -60,10 +60,15 @@
                </children></AnchorPane>
       </content>
     </Tab>
-      <Tab text="AES简易工具">
+      <Tab text="AES">
          <content>
             <fx:include fx:id="fooTabPage" source="Aes.fxml" />
          </content>
+      </Tab>
+      <Tab text="小工具">
+          <content>
+              <fx:include fx:id="smallTool" source="smallTool.fxml" />
+          </content>
       </Tab>
   </tabs>
 </TabPane>
