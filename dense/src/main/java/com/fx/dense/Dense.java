@@ -1,9 +1,11 @@
 package com.fx.dense;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -17,14 +19,33 @@ import java.util.Objects;
  * @create: 2021-10-08 16:00
  **/
 public class Dense extends Application {
+
+    private double xOffset = 0;
+    private double yOffset = 0;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
-        URL url = this.getClass().getClassLoader().getResource("dense.fxml");
-        Parent root = FXMLLoader.load(Objects.requireNonNull(url));
-        primaryStage.initStyle(StageStyle.UNDECORATED);
-        primaryStage.setScene(new Scene(root, 1130, 644));
-        primaryStage.setFullScreen(false);
+
+        URL url = this.getClass().getClassLoader().getResource("home.fxml");
+
+        Parent root = FXMLLoader.load(url);
+
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        root.setOnMouseDragged(event -> {
+            primaryStage.setX(event.getScreenX() - xOffset);
+            primaryStage.setY(event.getScreenY() - yOffset);
+        });
+
+
+        Scene scene = new Scene(root);
+
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setScene(scene);
         primaryStage.show();
+
     }
 
 
