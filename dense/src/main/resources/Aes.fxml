@@ -9,48 +9,48 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="615.0" prefWidth="1129.0" style="-fx-background-color: #D9EDF7;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fx.dense.controller.AesController">
-   <children>
-      <AnchorPane layoutY="35.0" prefHeight="43.0" prefWidth="1129.0" style="-fx-background-color: #8CD584;">
-         <children>
-            <Label layoutX="4.0" layoutY="14.0" text="加密模式：" />
-            <ChoiceBox fx:id="encryptionMode" layoutX="71.0" layoutY="9.0" prefHeight="28.0" prefWidth="51.0" />
-            <Label layoutX="129.0" layoutY="14.0" text="填充：" />
-            <ChoiceBox fx:id="filling" layoutX="167.0" layoutY="8.0" prefHeight="28.0" prefWidth="119.0" />
-            <Label layoutX="430.0" layoutY="13.0" text="秘钥：" />
-            <Label layoutX="838.0" layoutY="13.0" text="输出：" />
-            <TextField fx:id="secretKey" layoutX="465.0" layoutY="9.0" prefHeight="26.0" prefWidth="150.0" promptText="可输入任意8个字符秘钥" />
-            <ChoiceBox fx:id="output" layoutX="874.0" layoutY="7.0" prefHeight="28.0" prefWidth="67.0" />
-            <Label layoutX="950.0" layoutY="14.0" text="字符集：" />
-            <ChoiceBox fx:id="characterSet" layoutX="1001.0" layoutY="7.0" prefHeight="28.0" prefWidth="124.0" />
-            <Label layoutX="635.0" layoutY="12.0" text="偏移量：" />
-            <TextField fx:id="ivOffset" layoutX="680.0" layoutY="8.0" prefHeight="26.0" prefWidth="157.0" promptText="iv偏移量，ECB模式不用" />
-            <Label layoutX="306.0" layoutY="15.0" text="数据块：" />
-            <ChoiceBox fx:id="dataBlock" layoutX="354.0" layoutY="9.0" prefHeight="28.0" prefWidth="67.0" />
-         </children>
-      </AnchorPane>
-      <HBox prefHeight="36.0" prefWidth="1129.0">
-         <children>
-            <Button fx:id="perkey" mnemonicParsing="false" onAction="#perKeyMethod" prefHeight="33.0" prefWidth="123.0" text="绩效秘钥填充" />
-            <Button fx:id="addrekey" mnemonicParsing="false" onAction="#addKeyMethod" prefHeight="33.0" prefWidth="123.0" text="人事秘钥填充" />
-            <Button fx:id="commkey" mnemonicParsing="false" onAction="#commKeyMethod" prefHeight="33.0" prefWidth="123.0" text="comons秘钥填充" />
-         </children>
-      </HBox>
-      <AnchorPane layoutX="-3.0" layoutY="78.0" prefHeight="223.0" prefWidth="1129.0" style="-fx-background-color: #EFF7EE;">
-         <children>
-            <Label layoutX="14.0" layoutY="7.0" text="待加密、解密的文本：" />
-            <TextArea fx:id="requText" layoutX="19.0" layoutY="22.0" prefHeight="195.0" prefWidth="1105.0" promptText="海明牛皮" />
-         </children>
-      </AnchorPane>
-      <AnchorPane layoutX="-3.0" layoutY="303.0" prefHeight="317.0" prefWidth="1129.0" style="-fx-background-color: #DFECDE;">
-         <children>
-            <Label layoutX="14.0" layoutY="17.0" text="AES加密、解密转换结果(base64了)：" />
-            <TextArea fx:id="respoText" layoutX="19.0" layoutY="33.0" prefHeight="235.0" prefWidth="1105.0" promptText="result..." />
-            <Button fx:id="en" layoutX="406.0" layoutY="6.0" mnemonicParsing="false" onAction="#enMethod" text="AES加密" />
-            <Button fx:id="de" layoutX="489.0" layoutY="6.0" mnemonicParsing="false" onAction="#deMethod" text="AES解密" />
-            <Button fx:id="copyResult" layoutX="569.0" layoutY="6.0" mnemonicParsing="false" onAction="#copyResultMethod" text="复制结果" />
-            <Text fx:id="errorText" fill="#fa0000" layoutX="650.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="460.240234375" />
-         </children>
-      </AnchorPane>
-   </children>
-</AnchorPane>
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="630.0" prefWidth="1271.0" style="-fx-background-color: #D9EDF7;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fx.dense.controller.AesController">
+      <children>
+         <AnchorPane layoutY="35.0" prefHeight="43.0" prefWidth="1271.0" style="-fx-background-color: #8CD584;">
+            <children>
+               <Label layoutX="4.0" layoutY="14.0" text="加密模式：" />
+               <ChoiceBox fx:id="encryptionMode" layoutX="71.0" layoutY="9.0" prefHeight="28.0" prefWidth="64.0" />
+               <Label layoutX="159.0" layoutY="14.0" text="填充：" />
+               <ChoiceBox fx:id="filling" layoutX="197.0" layoutY="8.0" prefHeight="28.0" prefWidth="119.0" />
+               <Label layoutX="470.0" layoutY="15.0" text="秘钥：" />
+               <Label layoutX="934.0" layoutY="13.0" text="输出：" />
+               <TextField fx:id="secretKey" layoutX="515.0" layoutY="5.0" prefHeight="33.0" prefWidth="150.0" promptText="可输入任意8个字符秘钥" />
+               <ChoiceBox fx:id="output" layoutX="974.0" layoutY="7.0" prefHeight="28.0" prefWidth="67.0" />
+               <Label layoutX="1050.0" layoutY="14.0" text="字符集：" />
+               <ChoiceBox fx:id="characterSet" layoutX="1101.0" layoutY="7.0" prefHeight="28.0" prefWidth="124.0" />
+               <Label layoutX="695.0" layoutY="15.0" text="偏移量：" />
+               <TextField fx:id="ivOffset" layoutX="740.0" layoutY="4.0" prefHeight="33.0" prefWidth="157.0" promptText="iv偏移量，ECB模式不用" />
+               <Label layoutX="333.0" layoutY="16.0" text="数据块：" />
+               <ChoiceBox fx:id="dataBlock" layoutX="394.0" layoutY="9.0" prefHeight="28.0" prefWidth="67.0" />
+            </children>
+         </AnchorPane>
+         <HBox prefHeight="36.0" prefWidth="1271.0">
+            <children>
+               <Button fx:id="perkey" mnemonicParsing="false" onAction="#perKeyMethod" prefHeight="33.0" prefWidth="123.0" text="绩效秘钥填充" />
+               <Button fx:id="addrekey" mnemonicParsing="false" onAction="#addKeyMethod" prefHeight="33.0" prefWidth="123.0" text="人事秘钥填充" />
+               <Button fx:id="commkey" mnemonicParsing="false" onAction="#commKeyMethod" prefHeight="33.0" prefWidth="123.0" text="comons秘钥填充" />
+            </children>
+         </HBox>
+         <AnchorPane layoutX="-3.0" layoutY="78.0" prefHeight="223.0" prefWidth="1271.0" style="-fx-background-color: #EFF7EE;">
+            <children>
+               <Label layoutX="14.0" layoutY="7.0" text="待加密、解密的文本：" />
+               <TextArea fx:id="requText" layoutX="19.0" layoutY="22.0" prefHeight="195.0" prefWidth="1250.0" promptText="海明牛皮" />
+            </children>
+         </AnchorPane>
+         <AnchorPane layoutX="-3.0" layoutY="303.0" prefHeight="317.0" prefWidth="1271.0" style="-fx-background-color: #DFECDE;">
+            <children>
+               <Label layoutX="14.0" layoutY="17.0" text="AES加密、解密转换结果(base64了)：" />
+               <TextArea fx:id="respoText" layoutX="19.0" layoutY="33.0" prefHeight="235.0" prefWidth="1248.0" promptText="result..." />
+               <Button fx:id="en" layoutX="496.0" layoutY="6.0" mnemonicParsing="false" onAction="#enMethod" text="AES加密" />
+               <Button fx:id="de" layoutX="579.0" layoutY="6.0" mnemonicParsing="false" onAction="#deMethod" text="AES解密" />
+               <Button fx:id="copyResult" layoutX="659.0" layoutY="6.0" mnemonicParsing="false" onAction="#copyResultMethod" text="复制结果" />
+               <Text fx:id="errorText" fill="#fa0000" layoutX="650.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="460.240234375" />
+            </children>
+         </AnchorPane>
+      </children>
+   </AnchorPane>
