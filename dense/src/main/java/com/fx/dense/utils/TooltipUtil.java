@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Window;
 import javafx.util.Duration;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.controlsfx.control.Notifications;
 import org.controlsfx.tools.Utils;
 
@@ -15,6 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,7 +31,7 @@ public class TooltipUtil {
     }
 
     public static void showToast(String message) {
-        showToast((Node)null, message);
+        showToast((Node) null, message);
     }
 
     public static void showToast(Node node, String message) {
@@ -56,41 +58,27 @@ public class TooltipUtil {
         tooltip.setAnchorX(tooltip.getAnchorX() - tooltip.getWidth() / 2.0D);
         tooltip.setAnchorY(tooltip.getAnchorY() - tooltip.getHeight());
         if (time > 0L) {
-           /* (new Timer()).schedule(new TimerTask() {
-                @Override
-                public void run() {
+            // 多线程
+            ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1,
+                    new BasicThreadFactory.Builder().namingPattern("example-schedule-pool-%d").daemon(true).build());
+            executorService.scheduleAtFixedRate(() ->
                     Platform.runLater(() -> {
                         tooltip.hide();
-                    });
-                }
-            }, time);*/
-
-            ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
-            scheduledExecutorService.scheduleAtFixedRate(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            Platform.runLater(() -> {
-                                tooltip.hide();
-                            });
-                        }
-                    }
-                    , 0, 3, TimeUnit.SECONDS);
-
+                    }), 1, 2, TimeUnit.SECONDS);
         }
 
     }
 
     public static void showToast(String message, Pos pos) {
-        showToast((String)null, message, (Node)null, 3.0D, pos, (EventHandler)null, (Object)null, true, true);
+        showToast((String) null, message, (Node) null, 3.0D, pos, (EventHandler) null, (Object) null, true, true);
     }
 
     public static void showToast(String title, String message) {
-        showToast(title, message, (Node)null, 3.0D, Pos.BOTTOM_CENTER, (EventHandler)null, (Object)null, true, true);
+        showToast(title, message, (Node) null, 3.0D, Pos.BOTTOM_CENTER, (EventHandler) null, (Object) null, true, true);
     }
 
     public static void showToast(String title, String message, Pos pos) {
-        showToast(title, message, (Node)null, 3.0D, pos, (EventHandler)null, (Object)null, true, true);
+        showToast(title, message, (Node) null, 3.0D, pos, (EventHandler) null, (Object) null, true, true);
     }
 
     public static void showToast(String title, String message, Node graphic, double hideTime, Pos pos, EventHandler<ActionEvent> onAction, Object owner, boolean isHideCloseButton, boolean isDarkStyle) {

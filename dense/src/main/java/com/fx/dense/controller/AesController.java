@@ -4,14 +4,12 @@ import com.fx.dense.base.Const;
 import com.fx.dense.model.AesRequestModel;
 import com.fx.dense.utils.AesUtil;
 import com.fx.dense.utils.DesUtil;
+import com.fx.dense.utils.TooltipUtil;
 import com.google.common.collect.Lists;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
 
 import javax.validation.Valid;
@@ -81,20 +79,14 @@ public class AesController implements Initializable {
 
     public void enMethod(ActionEvent event){
         try{
-
-            int enOrDe = Const.ENCRYPT_OR_DECRYPT[0];
-
-            String results = generateEncryptionAndDecryptionResults(enOrDe);
+            String results = generateEncryptionAndDecryptionResults(Const.ENCRYPT_OR_DECRYPT[0]);
             System.out.println(results);
             respoText.setText(results);
             respoText.setStyle("-fx-text-fill: black");
-
-            //清空错误信息
-            errorText.setText("");
         }catch (Exception e){
             respoText.setText("暂无结果");
             respoText.setStyle("-fx-text-fill:pink");
-            errorText.setText(e.getMessage());
+            TooltipUtil.showToast(e.getMessage());
         }
     }
 
@@ -141,20 +133,14 @@ public class AesController implements Initializable {
 
     public void deMethod(ActionEvent event){
         try{
-
-            int enOrDe = Const.ENCRYPT_OR_DECRYPT[1];
-
-            String results = generateEncryptionAndDecryptionResults(enOrDe);
-            System.out.println(results);
+            String results = generateEncryptionAndDecryptionResults(Const.ENCRYPT_OR_DECRYPT[1]);
             respoText.setText(results);
             respoText.setStyle("-fx-text-fill: black");
-
-            //清空错误信息
-            errorText.setText("");
+          //   new Alert(Alert.AlertType.ERROR, "Unable to load "  + "\n" + "23423", ButtonType.OK).show();
         }catch (Exception e){
             respoText.setText("暂无结果");
             respoText.setStyle("-fx-text-fill:pink");
-            errorText.setText(e.getMessage());
+            TooltipUtil.showToast(e.getMessage());
         }
     }
 

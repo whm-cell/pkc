@@ -4,6 +4,7 @@ import com.fx.dense.base.Const;
 import com.fx.dense.model.DesRequestModel;
 import com.fx.dense.utils.DesUtil;
 import com.fx.dense.utils.GenerateFileUtil;
+import com.fx.dense.utils.TooltipUtil;
 import com.google.common.collect.Lists;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -117,12 +118,10 @@ public class DenseController implements Initializable {
         try{
             DesRequestModel build = getDesRequestModel(Const.ENCRYPT_OR_DECRYPT[0]);
             respoText.setText(DesUtil.desEncrypt(build));
-            //清空错误信息
-            errorText.setText("");
         }catch (Exception e){
+            TooltipUtil.showToast(e.getMessage());
             respoText.setText("暂无结果");
             respoText.setStyle("-fx-text-fill:pink");
-            errorText.setText(e.getMessage());
         }
     }
 
@@ -132,7 +131,7 @@ public class DenseController implements Initializable {
             DesRequestModel model = getDesRequestModel(Const.ENCRYPT_OR_DECRYPT[1]);
             respoText.setText(DesUtil.desEncrypt(model));
         }catch (Exception e){
-            errorText.setText(e.getMessage());
+            TooltipUtil.showToast(e.getMessage());
         }
     }
 
