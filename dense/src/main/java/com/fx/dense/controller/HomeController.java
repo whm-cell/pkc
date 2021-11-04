@@ -1,7 +1,9 @@
 package com.fx.dense.controller;
 
+import com.fx.dense.logback.ConsoleLogAppender;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -9,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -82,6 +85,25 @@ public class HomeController implements Initializable {
             e.printStackTrace();
             e.getCause();
         }
+    }
+
+    @FXML
+    public void LogAction(ActionEvent event){
+        TextArea textArea = new TextArea();
+        textArea.setFocusTraversable(true);
+        ConsoleLogAppender.textAreaList.add(textArea);
+
+        Tab tab = new Tab("日志页");
+        tab.setContent(textArea);
+        dynamicTabId.getTabs().add(tab);
+        if (event != null) {
+            dynamicTabId.getSelectionModel().select(tab);
+        }
+        tab.setOnCloseRequest((Event event1) -> {
+            ConsoleLogAppender.textAreaList.remove(textArea);
+        });
+
+
     }
 
 
