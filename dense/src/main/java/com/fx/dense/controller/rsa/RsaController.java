@@ -1,4 +1,4 @@
-package com.fx.dense.controller;
+package com.fx.dense.controller.rsa;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

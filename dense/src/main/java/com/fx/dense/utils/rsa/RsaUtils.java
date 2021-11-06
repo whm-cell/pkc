@@ -1,4 +1,4 @@
-package com.fx.dense.utils;
+package com.fx.dense.utils.rsa;
 
 import com.fx.dense.exception.BusinessException;
 
@@ -22,24 +22,7 @@ public class RsaUtils {
     private static final String ALGORITHM_RSA = "RSA";
 
 
-    /***
-     * 生成秘钥对
-     * @return
-     * @throws Exception
-     */
-    public static KeyPair getKeyPair() {
 
-        try {
-            //创建密钥对KeyPair
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM_RSA);
-            //密钥长度推荐为1024位
-            keyPairGenerator.initialize(1024);
-            return keyPairGenerator.generateKeyPair();
-        } catch (Exception e){
-            e.printStackTrace();
-            throw new BusinessException(e.getMessage());
-        }
-    }
 
     /**
      * 获取公钥(Base64编码)

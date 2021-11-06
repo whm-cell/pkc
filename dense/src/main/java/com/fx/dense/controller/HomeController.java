@@ -87,6 +87,51 @@ public class HomeController implements Initializable {
         }
     }
 
+    public void goRsa(ActionEvent event){
+        try{
+
+            URL url = this.getClass().getClassLoader().getResource("Rsa.fxml");
+
+            Parent blah = FXMLLoader.load(url);
+
+            Tab tab = new Tab("Rsa",blah);
+
+            dynamicTabId.getTabs().add(tab);
+
+            if (event != null) {
+                dynamicTabId.getSelectionModel().select(tab);
+            }
+            tab.setOnCloseRequest((Event event1) -> {
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            e.getCause();
+        }
+    }
+
+
+    public void goGenerateKeyRsa(ActionEvent event){
+        try{
+
+            URL url = this.getClass().getClassLoader().getResource("generateKeyPair.fxml");
+
+            Parent blah = FXMLLoader.load(url);
+
+            Tab tab = new Tab("生成密钥对RSA",blah);
+
+            dynamicTabId.getTabs().add(tab);
+
+            if (event != null) {
+                dynamicTabId.getSelectionModel().select(tab);
+            }
+            tab.setOnCloseRequest((Event event1) -> {
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            e.getCause();
+        }
+    }
+
     @FXML
     public void LogAction(ActionEvent event){
         TextArea textArea = new TextArea();

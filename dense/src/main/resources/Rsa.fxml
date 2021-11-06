@@ -8,7 +8,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.fx.dense.controller.RsaController"
+            fx:controller="com.fx.dense.controller.rsa.RsaController"
             prefHeight="400.0" prefWidth="600.0">
     <children>
         <AnchorPane prefHeight="43.0" prefWidth="1271.0" style="-fx-background-color: #8CD584;">
