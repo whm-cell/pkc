@@ -36,4 +36,14 @@ public class Const {
     public static final Integer[] LENGTH_OF_THE_COMPLETION_BYTE  = {8,16};
 
 
+    /**
+     *
+     */
+    public static final String[] SECRET_KEY_FORMAT  = {"PKCS#1","PKCS#8"};
+
+    /**
+     *  rsa加密头类型
+     */
+    public static final String[] RSA_ENCRYPTION_HEADER_TYPE  = {"PRIVATE KEY","PUBLIC KEY"};
+
 }

@@ -1,6 +1,27 @@
 package com.fx.dense.utils.rsa;
 
+
+
+
+import com.alibaba.fastjson.JSONObject;
+import com.fx.dense.base.Const;
+import com.fx.dense.model.rsa.GenerateKeyPairDto;
+import com.google.common.collect.Maps;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.openssl.PKCS8Generator;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.openssl.jcajce.JcaPKCS8Generator;
+import org.bouncycastle.openssl.jcajce.JceOpenSSLPKCS8EncryptorBuilder;
+import org.bouncycastle.operator.OutputEncryptor;
+import org.bouncycastle.util.io.pem.PemObject;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -49,59 +70,87 @@ public class GenerateKeyPairUtils {
 
     private static final String ALGORITHM_RSA = "RSA";
 
+    public static final String PUBLIC_KEY = "RSAPublicKey";
+    public static final String PRIVATE_KEY = "RSAPrivateKey";
+
+    /**
+     * 生成RSA的公钥和私钥
+     */
+    public static Map<String, Object> initKey(GenerateKeyPairDto dto) throws Exception{
 
 
-    public static Map<String, Object> genKeyPair() throws Exception {
-        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
-        keyPairGen.initialize(1024);
-        KeyPair keyPair = keyPairGen.generateKeyPair();
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM_RSA);
+        keyPairGenerator.initialize(dto.getSecretKeyBits(),new SecureRandom());
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+        // 获取pkcs#8公钥 字节
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+
+        byte[] publicKeyEncoded = publicKey.getEncoded();
+
+        // 获取pkcs#8私钥 字节
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        Map<String, Object> keyMap = new HashMap<String, Object>(2);
-        keyMap.put("aa", publicKey);
-        keyMap.put("bb", privateKey);
-        return keyMap;
+        byte[] privateKeyEncoded = privateKey.getEncoded();
+
+        //encrypted form of PKCS#8 file
+        JceOpenSSLPKCS8EncryptorBuilder encryptorBuilder = new JceOpenSSLPKCS8EncryptorBuilder(PKCS8Generator.PBE_SHA1_RC2_128);
+        encryptorBuilder.setRandom(new SecureRandom());
+        encryptorBuilder.setPasssword("abcde".toCharArray());
+        OutputEncryptor encryptor = encryptorBuilder.build();
+
+
+
+        // 获取#1 公钥   并输入
+        if(Const.SECRET_KEY_FORMAT[0].equals(dto.getSecretKeyFormat())){
+            //  获取公钥
+            // pkcs#1
+            // 转 #1格式秘钥
+            SubjectPublicKeyInfo spkInfo = SubjectPublicKeyInfo.getInstance(publicKeyEncoded);
+            ASN1Primitive primitive = spkInfo.parsePublicKey();
+            // 获得#1格式秘钥
+            byte[] primitivePublicKey = primitive.getEncoded();
+
+            String 公钥 = buildResult(dto, primitivePublicKey);
+
+            System.out.println(公钥);
+
+            // 获取私钥
+            // 转#1
+            PrivateKeyInfo privateKeyInfo = PrivateKeyInfo.getInstance(privateKeyEncoded);
+            ASN1Encodable asn1Encodable = privateKeyInfo.parsePrivateKey();
+            ASN1Primitive asn1Primitive = asn1Encodable.toASN1Primitive();
+            byte[] primitiveEncodedPrivateKey = asn1Primitive.getEncoded();
+            String 私钥 = buildResult(dto, primitiveEncodedPrivateKey);
+
+            System.out.println(私钥);
+
+        }else {
+            // #8
+            // 获取公钥
+            String spb = buildResult(dto, publicKeyEncoded);
+
+            System.out.println(spb);
+
+            // 获取私钥
+            String spv = buildResult(dto, privateKeyEncoded);
+
+            System.out.println(spv);
+
+        }
+
+
+
+        return null;
     }
 
-    public static void main(String[] args) throws Exception {
-
-        Map<String, Object> map = genKeyPair();
-
-        map.forEach((k,v)->{
-
-            System.out.println(k+"     "+v);
-
-        });
-
-
-
-       /* KeyPairGenerator rsa1 = KeyPairGenerator.getInstance("RSA", new BouncyCastleProvider());
-        rsa1.initialize(1024, new SecureRandom());
-        KeyPair keyPair = rsa1.generateKeyPair();
-
-        PublicKey pub = keyPair.getPublic(); // pkcs8公钥
-        byte[] pubBytes = pub.getEncoded();
-        SubjectPublicKeyInfo spkInfo = SubjectPublicKeyInfo.getInstance(pubBytes);
-        ASN1Primitive primitive = spkInfo.parsePublicKey();
-        byte[] publicKeyPKCS1 = primitive.getEncoded(); // pkcs1公钥
-
-
-
-
-        System.out.println(publicKeyPKCS1);
-
-
-        PrivateKey priv = keyPair.getPrivate(); // pkcs8私钥
-        byte[] privBytes = priv.getEncoded();
-        PrivateKeyInfo pkInfo = PrivateKeyInfo.getInstance(privBytes);
-        ASN1Encodable encodable = pkInfo.parsePrivateKey();
-        ASN1Primitive primitive1 = encodable.toASN1Primitive();
-        byte[] privateKeyPKCS1 = primitive1.getEncoded(); // pkcs1私钥
-
-        System.out.println(privateKeyPKCS1);*/
-
+    private static String buildResult(GenerateKeyPairDto dto, byte[] key) throws IOException {
+        PemObject pemObject = new PemObject(dto.getHeadType(), key);
+        StringWriter stringWriter = new StringWriter();
+        try (JcaPEMWriter pw = new JcaPEMWriter(stringWriter)) {
+            pw.writeObject(pemObject);
+        }
+        return stringWriter.toString();
     }
-
 
 
 }
