@@ -1,6 +1,9 @@
 package com.fx.dense.utils;
 
+import org.bouncycastle.util.encoders.Hex;
+
 import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 
 /**
  * @program: pkc
@@ -51,5 +54,38 @@ public class Hex2Util {
             result[i] = (byte) (high * 16 + low);
         }
         return result;
+    }
+
+    /**
+     * String转16进制片段* (org.bouncycastle.util.encoders.Hex)
+     * @param data
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    public static String encodeHex(String data) throws UnsupportedEncodingException {
+        byte[] encode = Hex.encode(data.getBytes());
+        return new String(encode);
+    }
+
+    /**
+     * Hex转String片段* (org.bouncycastle.util.encoders.Hex)
+     * @param data
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    public static String decodeHex(String data) throws UnsupportedEncodingException {
+        byte[] decode = Hex.decode(data.getBytes());
+        return new String(decode);
+    }
+
+
+    /**
+     * Base64返回值应该为byte[]数组类型
+     * @param data
+     * @return
+     */
+    public static byte[] encodeBase64Byte(String data){
+        byte[] encode = Base64.getEncoder().encode(data.getBytes());
+        return encode;
     }
 }

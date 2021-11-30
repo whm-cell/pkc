@@ -46,4 +46,15 @@ public class Const {
      */
     public static final String[] RSA_ENCRYPTION_HEADER_TYPE  = {"PRIVATE KEY","PUBLIC KEY"};
 
+
+    /**
+     * rsa 输出格式
+     */
+    public static final String[] RSA_OUTPUT_METHOD ={"PEM/Base64","Hex","Hex仅公钥","Hex仅私钥"};
+
+
+
+    public static final String PRIVATE_KEY_RSA = "privateKey";
+
+    public static final String PUBLIC_KEY_RSA = "publicKey";
 }

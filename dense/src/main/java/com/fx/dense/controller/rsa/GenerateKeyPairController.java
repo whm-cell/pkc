@@ -1,5 +1,8 @@
 package com.fx.dense.controller.rsa;
 
+import com.fx.dense.base.Const;
+import com.fx.dense.model.rsa.GenerateKeyPairDto;
+import com.fx.dense.utils.rsa.GenerateKeyPairUtils;
 import com.google.common.collect.Lists;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
@@ -7,9 +10,11 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextArea;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -33,13 +38,48 @@ public class GenerateKeyPairController implements Initializable {
     @FXML
     JFXTextField secretKey;
 
+    @FXML private TextArea requText;
+
+    @FXML private TextArea respoText;
 
     public void generate(ActionEvent event){
-        
+
+        try{
+            String value = (String)secretKeyBits.getValue();
+            int bitsNum = Integer.parseInt(value);
+
+            String outputFormatValue = (String)outputFormat.getValue();
+
+
+            GenerateKeyPairDto build = GenerateKeyPairDto.builder()
+                    .headType("")
+                    .secretKeyBits(bitsNum)
+                    .secretKeyFormat((String) secretKeyFormat.getValue())
+                    .secretKey(secretKey.getText()).outputFormat(outputFormatValue)
+                    .build();
+
+            Map<String, Object> map = GenerateKeyPairUtils.initKey(build);
+
+            map.forEach((k,v)->{
+                if(k.equals(Const.PUBLIC_KEY_RSA)){
+                    requText.setText((String) v);
+
+                }else {
+                    respoText.setText((String) v);
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            e.getCause();
+        }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        requText.setWrapText(true);
+        respoText.setWrapText(true);
+
         secretKeyBits.setItems(FXCollections.observableArrayList("512","1024","2048","4096"));
         secretKeyBits.setValue("1024");
 
