@@ -57,4 +57,12 @@ public class Const {
     public static final String PRIVATE_KEY_RSA = "privateKey";
 
     public static final String PUBLIC_KEY_RSA = "publicKey";
+
+    public static final String _HEXADECIMAL_REGULAR_16= "^[A-Fa-f0-9]+$";
+
+    public static final String PKCS1_PRIVATE_KEY_HEADER = "-----BEGIN RSA PRIVATE KEY-----";
+
+    public static final String PKCS1_PRIVATE_KEY_END = "-----END RSA PRIVATE KEY-----";
+
+    public static final String PKCS8_PRIVATE_KEY_HEADER = "-----BEGIN -----";
 }

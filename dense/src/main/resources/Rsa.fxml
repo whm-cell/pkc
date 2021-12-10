@@ -1,60 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.fx.dense.controller.rsa.RsaController"
-            prefHeight="400.0" prefWidth="600.0">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fx.dense.controller.rsa.RsaController">
     <children>
         <AnchorPane prefHeight="43.0" prefWidth="1271.0" style="-fx-background-color: #8CD584;">
             <children>
-                <Label layoutX="14.0" layoutY="15.0" text="填充方式："/>
-                <ChoiceBox fx:id="filling" layoutX="74.0" layoutY="8.0" prefHeight="28.0" prefWidth="119.0"/>
-                <Label layoutX="208.0" layoutY="15.0" prefHeight="15.0" prefWidth="86.0" text="支持超长文本："/>
-                <Label layoutX="692.0" layoutY="13.0" text="输出："/>
-                <ChoiceBox fx:id="output" layoutX="728.0" layoutY="5.0" prefHeight="28.0" prefWidth="67.0"/>
-                <Label layoutX="814.0" layoutY="13.0" text="字符集："/>
-                <ChoiceBox fx:id="characterSet" layoutX="865.0" layoutY="4.0" prefHeight="28.0" prefWidth="124.0"/>
-                <Label layoutX="430.0" layoutY="14.0" prefHeight="15.0" prefWidth="87.0" text="超长分割字符："/>
-                <TextField fx:id="extraLongSplitCharacter" layoutX="517.0" layoutY="7.0" prefHeight="26.0"
-                           prefWidth="150.0" text="::"/>
-                <ChoiceBox fx:id="veryLongText" layoutX="294.0" layoutY="6.0" prefHeight="28.0" prefWidth="108.0"/>
+                <Label layoutX="14.0" layoutY="15.0" text="填充方式：" />
+                <ChoiceBox fx:id="filling" layoutX="74.0" layoutY="8.0" prefHeight="28.0" prefWidth="119.0" />
+                <Label layoutX="208.0" layoutY="15.0" prefHeight="15.0" prefWidth="86.0" text="支持超长文本：" />
+                <Label layoutX="692.0" layoutY="13.0" text="输出：" />
+                <ChoiceBox fx:id="output" layoutX="728.0" layoutY="5.0" prefHeight="28.0" prefWidth="67.0" />
+                <Label layoutX="814.0" layoutY="13.0" text="字符集：" />
+                <ChoiceBox fx:id="characterSet" layoutX="865.0" layoutY="4.0" prefHeight="28.0" prefWidth="124.0" />
+                <Label layoutX="430.0" layoutY="14.0" prefHeight="15.0" prefWidth="87.0" text="超长分割字符：" />
+                <TextField fx:id="extraLongSplitCharacter" layoutX="517.0" layoutY="7.0" prefHeight="26.0" prefWidth="150.0" text="::" />
+                <ChoiceBox fx:id="veryLongText" layoutX="294.0" layoutY="6.0" prefHeight="28.0" prefWidth="108.0" />
             </children>
         </AnchorPane>
-        <AnchorPane layoutX="-3.0" layoutY="217.0" prefHeight="238.0" prefWidth="1271.0"
-                    style="-fx-background-color: #EFF7EE;">
+        <AnchorPane layoutX="-3.0" layoutY="217.0" prefHeight="238.0" prefWidth="1271.0" style="-fx-background-color: #EFF7EE;">
             <children>
-                <Label layoutX="15.0" layoutY="20.0" text="待加密、解密的文本："/>
-                <TextArea fx:id="requText" layoutX="19.0" layoutY="40.0" prefHeight="196.0" prefWidth="1246.0"
-                          promptText="海明牛皮"/>
+                <Label layoutX="15.0" layoutY="20.0" text="待加密、解密的文本：" />
+                <TextArea fx:id="text" layoutX="19.0" layoutY="40.0" prefHeight="196.0" prefWidth="1246.0" promptText="海明牛皮" />
             </children>
         </AnchorPane>
-        <AnchorPane layoutX="-3.0" layoutY="453.0" prefHeight="286.0" prefWidth="1271.0"
-                    style="-fx-background-color: #DFECDE;">
+        <AnchorPane layoutX="-3.0" layoutY="453.0" prefHeight="286.0" prefWidth="1271.0" style="-fx-background-color: #DFECDE;">
             <children>
-                <Label layoutX="14.0" layoutY="17.0" text="RSA加密、解密转换结果(base64了)："/>
-                <TextArea fx:id="respoText" layoutX="19.0" layoutY="45.0" prefHeight="235.0" prefWidth="1244.0"
-                          promptText="result..."/>
-                <Button fx:id="en" layoutX="496.0" layoutY="12.0" mnemonicParsing="false" onAction="#enMethod"
-                        text="RSA加密"/>
-                <Button fx:id="de" layoutX="579.0" layoutY="12.0" mnemonicParsing="false" onAction="#deMethod"
-                        text="RSA解密"/>
-                <Button fx:id="copyResult" layoutX="659.0" layoutY="12.0" mnemonicParsing="false"
-                        onAction="#copyResultMethod" text="复制结果"/>
+                <Label layoutX="14.0" layoutY="17.0" text="RSA加密、解密转换结果(base64了)：" />
+                <TextArea fx:id="privateKey" layoutX="19.0" layoutY="45.0" prefHeight="235.0" prefWidth="1244.0" promptText="result..." />
+                <Button fx:id="en" layoutX="496.0" layoutY="12.0" mnemonicParsing="false" onAction="#enMethod" text="RSA加密" />
+                <Button fx:id="de" layoutX="579.0" layoutY="12.0" mnemonicParsing="false" onAction="#deMethod" text="RSA解密" />
+                <Button fx:id="copyResult" layoutX="659.0" layoutY="12.0" mnemonicParsing="false" onAction="#copyResultMethod" text="复制结果" />
             </children>
         </AnchorPane>
-        <AnchorPane layoutX="-2.0" layoutY="43.0" prefHeight="192.0" prefWidth="1271.0"
-                    style="-fx-background-color: #EFF7EE;">
+        <AnchorPane layoutX="-2.0" layoutY="43.0" prefHeight="192.0" prefWidth="1271.0" style="-fx-background-color: #EFF7EE;">
             <children>
-                <Label layoutX="14.0" layoutY="3.0"
-                       text="输入加密公钥（以“-----BEGIN PUBLIC KEY-----”开头 “-----END PUBLIC KEY-----” 结尾）:"/>
-                <TextArea fx:id="publicKey" layoutX="17.0" layoutY="19.0" prefHeight="158.0" prefWidth="1247.0"
-                          promptText="海明牛皮"/>
+                <Label layoutX="14.0" layoutY="3.0" text="输入加密公钥（以“-----BEGIN PUBLIC KEY-----”开头 “-----END PUBLIC KEY-----” 结尾）:" />
+                <TextArea fx:id="publicKey" layoutX="17.0" layoutY="19.0" prefHeight="158.0" prefWidth="1247.0" promptText="海明牛皮" />
             </children>
         </AnchorPane>
     </children>

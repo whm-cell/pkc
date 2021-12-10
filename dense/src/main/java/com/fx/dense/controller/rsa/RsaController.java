@@ -34,10 +34,10 @@ public class RsaController {
     TextArea publicKey;
 
     @FXML
-    TextArea respoText;
+    TextArea privateKey;
 
     @FXML
-    TextArea requText;
+    TextArea text;
 
     @FXML
     Button en;

@@ -33,6 +33,7 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
+import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -80,7 +81,7 @@ public class GenerateKeyPairUtils {
                 .headType("")
                 .secretKeyBits(1024)
                 .secretKeyFormat("PKCS#1")
-                .secretKey("111222").outputFormat(Const.RSA_OUTPUT_METHOD[3])
+                .secretKey("11").outputFormat(Const.RSA_OUTPUT_METHOD[0])
                 .build();
         Map<String, Object> map = initKey(build);
         map.forEach((k, v) -> {
@@ -147,6 +148,8 @@ public class GenerateKeyPairUtils {
             if(StringUtils.isNotBlank(dto.getSecretKey())){
                 // 序列化私钥  需要用私钥密码
                 // You must specify a password when serializing a private key
+                // AES-128-CBC
+                // DES-EDE3-CBC
                 JcePEMEncryptorBuilder builder = new JcePEMEncryptorBuilder("AES-128-CBC");
                 builder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
                 builder.setSecureRandom(new SecureRandom());
@@ -154,7 +157,6 @@ public class GenerateKeyPairUtils {
                 JcaMiscPEMGenerator gen = new JcaMiscPEMGenerator(keyPair.getPrivate(), encryptor);
                 pkcs1_privateKey = out(gen.generate());
             }else {
-
                pkcs1_privateKey =  buildResult(dto, primitiveEncodedPrivateKey);
             }
             String hex_pkcs1_privateKey = Hex2Util.encodeHex(pkcs1_privateKey);
@@ -190,6 +192,8 @@ public class GenerateKeyPairUtils {
         }
         return map;
     }
+
+
 
     private static void buildMap(GenerateKeyPairDto dto, Map<String, Object> map, String publicKey, String hex_publicKey, String privateKey, String hex_privateKey) {
         if (dto.getOutputFormat().equals(Const.RSA_OUTPUT_METHOD[0])) {
