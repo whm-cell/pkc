@@ -26,6 +26,7 @@ import sun.misc.BASE64Encoder;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -81,7 +82,7 @@ public class GenerateKeyPairUtils {
                 .headType("")
                 .secretKeyBits(1024)
                 .secretKeyFormat("PKCS#1")
-                .secretKey("11").outputFormat(Const.RSA_OUTPUT_METHOD[0])
+                .secretKey("").outputFormat(Const.RSA_OUTPUT_METHOD[0])
                 .build();
         Map<String, Object> map = initKey(build);
         map.forEach((k, v) -> {
@@ -155,6 +156,16 @@ public class GenerateKeyPairUtils {
                 builder.setSecureRandom(new SecureRandom());
                 PEMEncryptor encryptor = builder.build(dto.getSecretKey().toCharArray());
                 JcaMiscPEMGenerator gen = new JcaMiscPEMGenerator(keyPair.getPrivate(), encryptor);
+
+              /*  ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                JcaPEMWriter jcaPEMWriter = new JcaPEMWriter(new OutputStreamWriter(baos,
+                        StandardCharsets.US_ASCII));
+
+                jcaPEMWriter.writeObject(keyPair.getPrivate(),encryptor);
+                jcaPEMWriter.flush();
+                jcaPEMWriter.close();
+                byte[] bytes = baos.toByteArray();
+                System.out.println("测试："+new String(bytes));*/
                 pkcs1_privateKey = out(gen.generate());
             }else {
                pkcs1_privateKey =  buildResult(dto, primitiveEncodedPrivateKey);
