@@ -1,0 +1,17 @@
+<config>
+    <input>
+        <!--混淆后直接覆盖原文件,out指向的路劲为混淆后的jar -->
+        <jar in="dense-0.0.1-SNAPSHOT.jar"  out="tools.jar" />
+    </input>
+    <keep-names>
+        <!-- protected/public的都保留名称 -->
+        <class access="protected+">
+            <field access="protected+" />
+            <method access="protected+" />
+        </class>
+    </keep-names>
+    <ignore-classes>
+        <!-- 注意：spring的框架相关的文件需要排除，避免启动报错 -->
+        <class template="class *springframework*"/>
+    </ignore-classes>
+</config>

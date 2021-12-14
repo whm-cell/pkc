@@ -76,21 +76,6 @@ public class GenerateKeyPairUtils {
         configureSecProvider();
     }
 
-    public static void main(String[] args) throws Exception {
-
-        GenerateKeyPairDto build = GenerateKeyPairDto.builder()
-                .headType("")
-                .secretKeyBits(1024)
-                .secretKeyFormat("PKCS#1")
-                .secretKey("").outputFormat(Const.RSA_OUTPUT_METHOD[0])
-                .build();
-        Map<String, Object> map = initKey(build);
-        map.forEach((k, v) -> {
-            System.out.println(k);
-            System.out.println(v);
-        });
-    }
-
     /**
      * Configures security providers which are used by the library. Can be called
      * multiple times (subsequent calls won't have any effect).

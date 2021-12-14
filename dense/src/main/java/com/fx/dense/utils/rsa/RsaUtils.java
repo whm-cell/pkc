@@ -213,66 +213,6 @@ public class RsaUtils {
         return null;
     }
 
-
-
-
-
-
-    public static void main(String[] args) {
-        List<String> my = null;
-        //1.1完成测试  pkcs8  base64 输出
-        // my = pkcs8containSecretToBase64();
-        // 1.2 完成测试 pkcs8 公钥为hex输出  私钥为base64输出
-        // List<String> my = pkcs8containSecretToPublicKeyHex();
-
-        // 1.3 完成测试 pkcs8 公钥为base64输出  私钥为hex输出
-        // List<String> my = pkcs8containSecretToPrivateKeyHex();
-
-        // 1.4  完成测试 pkcs8 公钥为hex输出  私钥为hex输出
-        // my = pkcs8containSecretToPrivateKeyHexAndPublicKeyHex();
-
-        // 1.5 完成测试 pkcs1 下  均为 base64 十六位输出的密钥
-        //  my = pkcs1containSecret();
-
-        // 1.6 完成测试 pkcs1 下  均为 hex 十六位输出的密钥
-        // my = pkcs1containSecretToPrivateKeyAndPublicKeyHex();
-
-        // 1.7 完成测试 pkcs1 下  公钥为base64输出  私钥为hex输出
-        // my = pkcs1containSecretToPrivateKeyHex();
-
-        // 1.7 完成测试 pkcs1 下  公钥为hex输出  私钥为hex输出
-        // my = pkcs1containSecretToPublicKeyHex();
-
-         my = pkcs1containSecretToBase64();
-
-
-
-        PublicKeyEncryptionDto build = PublicKeyEncryptionDto.builder()
-                .publicKey(my.get(0))
-                .privateKey(my.get(1))
-                .secretKey("")
-                .output(Const.RSA_OUTPUT_METHOD[2])
-                .text("七龙珠")
-                .characterSet("utf-8")
-                //.filling("RSA/ECB/PKCS1Padding")
-                //.filling("RSA/ECB/OAEPWithSHA-1AndMGF1Padding")
-                //.filling("RSA/None/PKCS1Padding")
-                .filling("RSA/ECB/NoPadding")
-                .build();
-
-        try {
-            // 公钥加密
-            buildParametersAndResultSetsPublicKey(build);
-
-            // 私钥解密
-             privateKeyDecryption(build);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            e.getCause();
-        }
-    }
-
     public static String buildParametersAndResultSetsPublicKey(PublicKeyEncryptionDto build) {
         byte[] bytes = publicKeyEncryption(build);
         if (build.getOutput().equals(Const.Base64)) {
