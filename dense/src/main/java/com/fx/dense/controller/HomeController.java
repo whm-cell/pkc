@@ -12,7 +12,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -159,5 +163,18 @@ public class HomeController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+    }
+
+    /**** minimize ****/
+    @FXML
+    public void miniAction(MouseEvent event) throws IOException {
+        ((Stage) ((Circle) event.getSource()).getScene().getWindow()).setIconified(true);
+    }
+
+    /**** close screen ****/
+    @FXML
+    public void closeAction(MouseEvent event) throws IOException {
+
+        System.exit(0);
     }
 }

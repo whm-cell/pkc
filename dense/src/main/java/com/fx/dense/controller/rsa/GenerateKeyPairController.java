@@ -11,6 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 
 import java.net.URL;
@@ -44,10 +45,10 @@ public class GenerateKeyPairController implements Initializable {
     @FXML private TextArea respoText;
 
     @FXML
-    JFXButton publicCopy;
+    Button publicCopy;
 
     @FXML
-    JFXButton privateCopy;
+    Button privateCopy;
 
 
     public void generate(ActionEvent event){

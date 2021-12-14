@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Button?>
@@ -35,8 +34,8 @@
                 <Label layoutX="14.0" layoutY="25.0" text="非对称加密私钥(请使用txt记事本将下面加密字符串存为pri.key文件):" />
             <Label layoutX="14.0" layoutY="7.0" text="非对称加密私钥:" />
                 <TextArea fx:id="respoText" layoutX="19.0" layoutY="44.0" prefHeight="235.0" prefWidth="1244.0" promptText="result..." />
-            <JFXButton fx:id="publicCopy" layoutX="529.0" layoutY="14.0" onAction="#publicCopyAction" style="-fx-background-color: #F0AEA9;" text="公钥复制" />
-            <JFXButton fx:id="privateCopy" layoutX="604.0" layoutY="14.0" onAction="#privateCopyAction" style="-fx-background-color: #F0AEA9;" text="私钥复制" />
+            <Button fx:id="publicCopy" layoutX="572.0" layoutY="13.0" mnemonicParsing="false" onAction="#publicCopyAction" style="-fx-background-color: #EB8F00;" text="公钥复制" textFill="WHITE" />
+            <Button fx:id="privateCopy" layoutX="657.0" layoutY="13.0" mnemonicParsing="false" onAction="#privateCopyAction" style="-fx-background-color: #EB8F00;" text="私钥复制" textFill="WHITE" />
             </children>
         </AnchorPane>
     </children>
