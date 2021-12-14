@@ -2,6 +2,7 @@ package com.fx.dense.utils.rsa;
 
 import cn.hutool.core.util.HexUtil;
 import com.fx.dense.base.Const;
+import com.fx.dense.exception.BusinessException;
 import com.fx.dense.model.rsa.GenerateKeyPairDto;
 import com.fx.dense.model.rsa.PublicKeyEncryptionDto;
 import com.fx.dense.utils.Hex2Util;
@@ -9,9 +10,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Base64Util;
 import org.assertj.core.util.Lists;
-import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.DLSequence;
+import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -45,6 +44,38 @@ import java.util.Map;
  * @description:
  * @author: WangHaiMing
  * @create: 2021-11-04 16:25
+ *
+ *
+ *
+ *
+ *
+ *
+ * 1.RSA_PKCS1_PADDING 填充模式，最常用的模式
+ *
+ * 要求:
+ * 输入：必须 比 RSA 钥模长(modulus) 短至少11个字节, 也就是　RSA_size(rsa) – 11
+ * 如果输入的明文过长，必须切割，　然后填充
+ *
+ * 输出：和modulus一样长
+ *
+ * 根据这个要求，对于512bit的密钥，　block length = 512/8 – 11 = 53 字节
+ *
+ * 2.RSA_PKCS1_OAEP_PADDING
+ * 输入：RSA_size(rsa) – 41
+ *
+ * 输出：和modulus一样长
+ *
+ * 3.for RSA_NO_PADDING　　不填充
+ *
+ * 输入：可以和RSA钥模长一样长，如果输入的明文过长，必须切割，　然后填充
+ *
+ * 输出：和modulus一样长
+ *
+ * 跟DES，AES一样，　RSA也是一个块加密算法（ block cipher algorithm），总是在一个固定长度的块上进行操作。
+ *
+ * 但跟AES等不同的是，　block length是跟key length有关的。
+ *
+ * 每次RSA加密的明文的长度是受RSA填充模式限制的，但是RSA每次加密的块长度就是key length。
  **/
 public class RsaUtils {
 
@@ -86,55 +117,77 @@ public class RsaUtils {
     /**
      * RSA公钥
      *
-     * @param usePKCS8  是否采用PKCS8填充模式
+     * @param usePKCS1  是否采用PKCS1填充模式
      * @param publicKey 公钥
      * @return 公钥
      * @throws Exception 加密过程中的异常信息
      */
-    public static RSAPublicKey generatePublicKey(boolean usePKCS8, byte[] publicKey) throws Exception {
+    public static RSAPublicKey generatePublicKey(boolean usePKCS1, byte[] publicKey) throws Exception {
         KeySpec keySpec;
-        if (usePKCS8) {
-            // PKCS8填充
-            keySpec = new X509EncodedKeySpec(publicKey);
-        } else {
+        if (usePKCS1) {
             // PKCS1填充
             DLSequence sequence = (DLSequence) ASN1Primitive.fromByteArray(publicKey);
             BigInteger v1 = ((ASN1Integer) sequence.getObjectAt(0)).getValue();
             BigInteger v2 = ((ASN1Integer) sequence.getObjectAt(1)).getValue();
             keySpec = new RSAPublicKeySpec(v1, v2);
+        } else {
+            // PKCS8填充
+            keySpec = new X509EncodedKeySpec(publicKey);
         }
         RSAPublicKey pubKey = (RSAPublicKey) KeyFactory.getInstance("RSA", BouncyCastleProvider.PROVIDER_NAME).generatePublic(keySpec);
         return pubKey;
     }
+   /* public static String getPaddingString(PaddingMode paddingMode) {
+        switch (paddingMode) {
+            case NO_PADDING:
+                return "NoPadding";
+            case PKCS7_PADDING:
+                return "PKCS7Padding";
+            case PKCS1_ENCRYPT_PADDING:
+                return "PKCS1Padding";
+            case OAEP_PADDING:
+                return "OAEPPadding";
+            case PSS_PADDING:
+                return "PSS";
+            default:
+                return null;
 
+        }
+    }*/
 
-    public static byte[] publicKeyEncryption(String context, String publicKey, boolean type) {
+    public static byte[] publicKeyEncryption(PublicKeyEncryptionDto dto) {
 
         try {
-            byte[] contextBytes = context.getBytes();
+            byte[] contextBytes =dto.getText().getBytes(dto.getCharacterSet());
+
+            int inputLen = contextBytes.length;
+
+
+            String publicKey = dto.getPublicKey();
+
+            boolean type = dto.isType();
 
             //1. 如果为hex 这样转为base64
             if (publicKey.matches(Const._HEXADECIMAL_REGULAR_16)) {
                 publicKey = Hex2Util.decodeHex(publicKey);
             }
+
             //2. 替换掉头和尾
             publicKey = publicKey.replace("-----BEGIN -----", "");
             publicKey = publicKey.replace("-----END -----", "");
+
             java.security.Security.addProvider(
                     new org.bouncycastle.jce.provider.BouncyCastleProvider()
             );
 
-            //3. base64解码 找到原秘钥
             BASE64Decoder decoder = new BASE64Decoder();
+
             byte[] bytes = decoder.decodeBuffer(publicKey);
-            //4.得到原公钥数组
 
-            RSAPublicKey key = generatePublicKey(true, bytes);
+            RSAPublicKey rsaPublicKey = generatePublicKey(type, bytes);
+            Cipher cipher = Cipher.getInstance(dto.getFilling());
+            cipher.init(Cipher.ENCRYPT_MODE, rsaPublicKey);
 
-            Cipher cipher = Cipher.getInstance("RSA");
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-
-            int inputLen = contextBytes.length;
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             int offSet = 0;
             byte[] cache;
@@ -160,87 +213,15 @@ public class RsaUtils {
         return null;
     }
 
-    public static List<String> pkcs1containSecret() {
-
-        String publicKey = "-----BEGIN -----\n" +
-                "MIGJAoGBAJgVdNY4X5FHMq5xNKfTAOL3jVHks/RvioJ7uxNVhkpu/uwaiumCwzvn\n" +
-                "Jz4GnGUBGfwAdqS3PaLHBHo60n1Kt1pXVVV1nLCxJtfsHZIxcE4RDXKBe57xP7Ah\n" +
-                "QTQ3aSbCgYSQATwEsqzW6aGauG/jwZfxRmBD5H0bSRYdvDQ53mwBAgMBAAE=\n" +
-                "-----END -----";
-        String privateKey = "-----BEGIN -----\n" +
-                "MIICWwIBAAKBgQCYFXTWOF+RRzKucTSn0wDi941R5LP0b4qCe7sTVYZKbv7sGorp\n" +
-                "gsM75yc+BpxlARn8AHaktz2ixwR6OtJ9SrdaV1VVdZywsSbX7B2SMXBOEQ1ygXue\n" +
-                "8T+wIUE0N2kmwoGEkAE8BLKs1umhmrhv48GX8UZgQ+R9G0kWHbw0Od5sAQIDAQAB\n" +
-                "AoGAJ00kLFfVGo3zovDOUrBMglrGwmr/tiM9AAtJhO2NDp8wcYNKcp3AJjLOCVFc\n" +
-                "CR4HwP+9qUNRQkd7+LpKuuYcC22tdAuR/xGYxuW2/Wsnu5qOFmj0EAE6892k8dDj\n" +
-                "RuaQwggzv4Rjr4Pv8z48LdSYfBW5bPt3ooV/mRKlQN+ay4ECQQDhyEVTWo2dYqZQ\n" +
-                "PtF/1dUVNHK8bLR9OFG8PjxtySL62vKRwblQOa3+UvaFDK8cCNB9vV0/ulWGFczn\n" +
-                "xFKmmHJVAkEArHAiva16sbKm7gK9wlWQSbLFnnIPf1niUM4CtCTqW4xSAkWumVY7\n" +
-                "EqQafBqUoWns2C7hkRgqxS0E+YfZwzm2/QJAS12CZpRveP2Y7mhJnhZOjkl3kxXm\n" +
-                "GXZXMjLEERF2r62uEqFLrk/SmHYw+7CEMyNuFMrE+aTFL4DPaP3LaPiyEQJAe5iM\n" +
-                "biPv83o3yBVS6f3mQ8zNdLoQfZlxa7Wdnn1vNVsoVNSZRvLVuJDDIvzyV5fS2UkR\n" +
-                "CKyny1hvXmOPJC00CQJAPaY4ubgnyQE58ueSgO4s+9CMKbRJUU49omOnEGRsqOU4\n" +
-                "SPW4cMJAeiTp2dX1zwuohw9CiDjIJ8ZjJB0IDkrRng==\n" +
-                "-----END -----";
-        List<String> list = Lists.newArrayList();
-        list.add(publicKey);
-        list.add(privateKey);
-        return list;
-    }
-
-    public static List<String> pkcs1containSecretToPrivateKeyAndPublicKeyHex() {
-
-        String publicKey = "2d2d2d2d2d424547494e202d2d2d2d2d0d0a4d49474a416f4742414f4c666c674a2f77717455625558594d594e45503675646968394879684b6d63566f4a6f3252483730593435594e4946747a5a774439350d0a63686b51672f6f7575416744374c467a61684d75303062554754376f664654414d4a69446b4748456e4d506561346a6f4c474e49414375796130584f582b63510d0a563135694944314a657772323578496c566e5a7276554c342b375579676879624f316f43375748704262536973522f663430743341674d424141453d0d0a2d2d2d2d2d454e44202d2d2d2d2d0d0a";
-        String privateKey = "2d2d2d2d2d424547494e202d2d2d2d2d0d0a4d4949435867494241414b42675144693335594366384b72564731463244474452442b726e596f6652386f53706e466143614e6b522b39474f4f5744534262630d0a3263412f6558495a454950364c726749412b797863326f544c744e4731426b2b364878557744435967354268784a7a44336d75493643786a53414172736d74460d0a7a6c2f6e45466465596941395358734b397563534a565a32613731432b5075314d6f49636d7a746141753168365157306f724566332b4e4c64774944415141420d0a416f4741526e587558775253373263664d4f762b4a4b695470626364364b3068497a327951715a76716e7430347268552f37727037746c714463796f4651532b0d0a474874654349382f656256416f6f694f635a6235364548494b757868387449526e526f6a4a514746424b4b2b397a422f5a6d312b71572f3438716879686e67540d0a3853556938356c536875477863716c773352614e706647376d4d3666343679346d58474a58387050376437636b354543515144353738486c796e5473574752350d0a4c4879707847725a776b614d41545955306a5973474545434b2f476f7a45416b6a70556c6473625a7475394e6b3351537757584161725043393250634f7158690d0a345464374d704437416b4541364743582b78455370394466624d52716d697a37753439696951684d5857365244614c71314e4677305767467a6c36666e42536f0d0a513678784e5757687a544e6335675a3645675a64746a6d7958426f706a7a492b74514a42414933546e4a374e2f50316b78316276684b6f3957446a4c676f624e0d0a355364356864344e7755332f4b376d5364632b497a562b6541416270525041726656467252316368395848734f6c4674516c62315943746272574d435151446a0d0a4454615376327a4f4168323870664a504d4c4c4b34642f796175524b796e54367350766f383766624e467576392b375754367a56617447327a64595a725230520d0a4f4c54666c63374d395855623377684b66567164416b4541374148356662616b493065797539346a717268783378346f46672b34477249366d453670656255520d0a71464463336d754a512b39657573322f3535614a4c706978464f586b36332b732b4539366b31504837414f6168773d3d0d0a2d2d2d2d2d454e44202d2d2d2d2d0d0a";
-        List<String> list = Lists.newArrayList();
-        list.add(publicKey);
-        list.add(privateKey);
-        return list;
-    }
 
 
-    public static List<String> pkcs1containSecretToPrivateKeyHex() {
 
-        String publicKey = "-----BEGIN -----\n" +
-                "MIGJAoGBAOeNWYF9bXPiW7Nf1TXR2nG8MZ7ZrJVr/xeDeBdAFRwcKOqx1HC3taPF\n" +
-                "7rMHeSBlQYQGsBUgxYwBcispNJhGPX+2c5wQ5qLBkf1L0JXxoQ0FSs6pURc6Ywe3\n" +
-                "oWGsZxZjfvkUW/wdGsPbbE+bnzl2nVDTF4WxvdXkUGrwOYxJXlglAgMBAAE=\n" +
-                "-----END -----";
-        String privateKey = "2d2d2d2d2d424547494e202d2d2d2d2d0d0a4d4949435841494241414b426751446e6a566d426657317a346c757a58395531306470787644476532617956612f3858673367585142556348436a71736452770d0a7437576a7865367a42336b675a55474542724156494d574d415849724b545359526a312f746e4f63454f6169775a4839533943563861454e4255724f715645580d0a4f6d4d487436466872476357593337354646763848527244323278506d3538356470315130786546736233563546427138446d4d535635594a514944415141420d0a416f4741577047644b7473476a7364424776346e425441614131616243676b57536a4f3979564b784446635361725a52417375667a70377375797857573078580d0a416d62596f3232435069466459342f464f6b435a7739336c653270483430464e4b4843537538576d4767525262674b44653566624d34534971634161512f52410d0a5159712b58664e504b4c416c554e6946494c7a782b336c783456432b6a76354435494d63665a37324c6731436a316b435151443161516e5346365a69652b61420d0a322b413978774c546b784846746738444971344e382b773166576a3561674b4337793035456f61674b78314359612b653538667943576a3057666a793265786a0d0a33474e5a464e4d58416b4541385973356e48584556427677453552534e654a7942464b3241543041314171554c57776c4945514b4765336a57316944344a6a420d0a344837586d37367578333943574c657263536d5875614343336a655a6738506b49774a42414b596e322f4a572b4e77744c304130386e7068523953662b7152320d0a51327649437a682f4d69703149714862324a39312b4a52767170362f4569786a6e31686a626369392f6b57537453385878536c486969784349546b43514439440d0a644f4a713466495a6f796174715636646f626c4b4a497473652b514e70555045574844384152314c646b6e396841543258596b3844364b6d4c63626f714f72740d0a71455371585366735233714757336e73653773435145447337766275764852776e5134682f7858453847537152583849466c4c2f5851574379486169665a72310d0a76344c517a61366e6b7233376d5a726343414655586b464d6b2f7846315668582b7a624139362f664672493d0d0a2d2d2d2d2d454e44202d2d2d2d2d0d0a";
-        List<String> list = Lists.newArrayList();
-        list.add(publicKey);
-        list.add(privateKey);
-        return list;
-    }
 
-    public static List<String> pkcs1containSecretToPublicKeyHex() {
-
-        String publicKey = "2d2d2d2d2d424547494e202d2d2d2d2d0d0a4d49474a416f474241497138414f577a73456c43746856722f464778504a6268527243514a4f597735593730474b7746352b3357757a746438664573587944730d0a3750425372336439694e4b74463268644356732b3037636e386137394b52376f457277764d37792f467672583177455133483559674963715263636d4949596b0d0a5758457a634271554e30704875484d7946342f4f4f44394843324972696a68544952773468766d736269694e4c4334446d4f6d7241674d424141453d0d0a2d2d2d2d2d454e44202d2d2d2d2d0d0a";
-        String privateKey = "-----BEGIN -----\n" +
-                "MIICXQIBAAKBgQCKvADls7BJQrYVa/xRsTyW4UawkCTmMOWO9BisBeft1rs7XfHx\n" +
-                "LF8g7OzwUq93fYjSrRdoXQlbPtO3J/Gu/Ske6BK8LzO8vxb619cBENx+WICHKkXH\n" +
-                "JiCGJFlxM3AalDdKR7hzMhePzjg/RwtiK4o4UyEcOIb5rG4ojSwuA5jpqwIDAQAB\n" +
-                "AoGAaWf4Ao3olXDjKRl3hpXzo+sbK1EJR//Emj1pdWGzWmg4rx1skkGVMU3xo5If\n" +
-                "ENlHGFI8o6V0U2hDsTffD4X3NAQ0TZ9WkTWjY8u2swKsa/2zIRK9iC4SSA5RurIB\n" +
-                "hcJFfCHEApk1LLl+Q25/5Zyp3BSDh38lWM6d9pSresAg7LECQQD3YJ4Yl99Mp9vm\n" +
-                "zBWcY6x5upYyaoRLt8KO9/KSnC60OwedYWGXCOHIq0PcnRCQY9XAWLuC+0Hq0oph\n" +
-                "tcxYXMgjAkEAj5HzDB1QizzY3tcHuZgkabSdxxk8DvS4KrH0pyaFwTFnX3ThlxGh\n" +
-                "l33E+IOH+OYa2bwF8QK70BzVLvP7H3Hs2QJAKhwUTXNs24unbz5GX3zIG2CbuLFR\n" +
-                "G+KIB/ZFIJfdi2iQ/0VYa3FjndkpkCBcdXfJJxjzsnQ64FI+pCtiQZhpqQJBAIy9\n" +
-                "8NtxaWH11kwt0/7W7OtLClkBneSzdk80gLfThc+sFMB5HiUwPY761jshBgyz1qKY\n" +
-                "NeLcYS1U9o++0fEzh5ECQQDhrCYSYD2gOex72q7O/86527sqtvuYFLSAIya9ZrbT\n" +
-                "V4uReRHhHlkMK9daY3uozlwsXmgUttBfC9hl57yr3RaR\n" +
-                "-----END -----";
-        List<String> list = Lists.newArrayList();
-        list.add(publicKey);
-        list.add(privateKey);
-        return list;
-    }
 
     public static void main(String[] args) {
         List<String> my = null;
         //1.1完成测试  pkcs8  base64 输出
-         my = pkcs8containSecretToBase64();
+        // my = pkcs8containSecretToBase64();
         // 1.2 完成测试 pkcs8 公钥为hex输出  私钥为base64输出
         // List<String> my = pkcs8containSecretToPublicKeyHex();
 
@@ -262,6 +243,7 @@ public class RsaUtils {
         // 1.7 完成测试 pkcs1 下  公钥为hex输出  私钥为hex输出
         // my = pkcs1containSecretToPublicKeyHex();
 
+         my = pkcs1containSecretToBase64();
 
 
 
@@ -271,14 +253,19 @@ public class RsaUtils {
                 .secretKey("")
                 .output(Const.RSA_OUTPUT_METHOD[2])
                 .text("七龙珠")
+                .characterSet("utf-8")
+                //.filling("RSA/ECB/PKCS1Padding")
+                //.filling("RSA/ECB/OAEPWithSHA-1AndMGF1Padding")
+                //.filling("RSA/None/PKCS1Padding")
+                .filling("RSA/ECB/NoPadding")
                 .build();
 
         try {
             // 公钥加密
-            String enResult = publicKeyEncryptedByteToString(build);
-            // 私钥解密
-            privateKeyDecryption(build, enResult);
+            buildParametersAndResultSetsPublicKey(build);
 
+            // 私钥解密
+             privateKeyDecryption(build);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -286,25 +273,76 @@ public class RsaUtils {
         }
     }
 
-    private static void privateKeyDecryption(PublicKeyEncryptionDto dto, String enResult) throws IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+    public static String buildParametersAndResultSetsPublicKey(PublicKeyEncryptionDto build) {
+        byte[] bytes = publicKeyEncryption(build);
+        if (build.getOutput().equals(Const.Base64)) {
+//            BASE64Encoder encoder = new BASE64Encoder();
+//
+//            String encode = encoder.encode(bytes);
+            return java.util.Base64.getEncoder().encodeToString(bytes);
+        }
+        return Hex2Util.parseByte2HexStr(bytes);
+
+    }
+
+    public static String privateKeyDecryption(PublicKeyEncryptionDto dto) throws IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 
         String privateKey = dto.getPrivateKey();
+
+        String text = dto.getText();
 
         //1. 如果为hex 这样转为base64
         if (privateKey.matches(Const._HEXADECIMAL_REGULAR_16)) {
             privateKey = Hex2Util.decodeHex(privateKey);
         }
-
+        byte[] decode = null;
         // 1.文本需要通过base64解密 获得 字节数组  进行解密
-        byte[] decode = java.util.Base64.getDecoder().decode(enResult);
-        PrivateKey encryptedPrivateKey = null;
-        byte[] encoded = null;
+        if (text.matches(Const._HEXADECIMAL_REGULAR_16)) {
+            decode = Hex2Util.parseHexStr2Byte(text);
+
+        }else {
+            decode = java.util.Base64.getDecoder().decode(text);
+        }
+
+        // 格式化私钥
+        byte[] encoded = formatThePrivateKey(dto, privateKey);
+
+        // 开始解密
+        PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(encoded);
+        KeyFactory keyFactory = KeyFactory.getInstance(RSA_ALGORITHM);
+        Key privateK = keyFactory.generatePrivate(pkcs8KeySpec);
+        // Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        Cipher cipher = Cipher.getInstance(dto.getFilling());
+
+        cipher.init(Cipher.DECRYPT_MODE, privateK);
+        int inputLen = decode.length;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        int offSet = 0;
+        byte[] cache;
+        int i = 0;
+        while (inputLen - offSet > 0) {
+            if (inputLen - offSet > MAX_DECRYPT_BLOCK) {
+                cache = cipher.doFinal(decode, offSet, MAX_DECRYPT_BLOCK);
+            } else {
+                cache = cipher.doFinal(decode, offSet, inputLen - offSet);
+            }
+            out.write(cache, 0, cache.length);
+            i++;
+            offSet = i * MAX_DECRYPT_BLOCK;
+        }
+        byte[] decryptedData = out.toByteArray();
+        out.close();
+        return new String(decryptedData);
+    }
+
+    private static byte[] formatThePrivateKey(PublicKeyEncryptionDto dto, String privateKey) throws IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException {
         String secretKey = dto.getSecretKey();
 
+        PrivateKey encryptedPrivateKey;
+        byte[] encoded;
         if(StringUtils.isNotBlank(dto.getSecretKey())){
             if(privateKey.contains("Proc-Type: 4,ENCRYPTED")){
-                System.out.println("暂不支持pkcs1下 （已加密私钥）密码的 解密");
-                return;
+                throw new BusinessException("暂不支持pkcs1下 （已加密私钥）密码的 解密");
             }
             // 需要先执行解密操作
             privateKey = privateKey.replace("-----BEGIN ENCRYPTED PRIVATE KEY-----", "");
@@ -332,86 +370,63 @@ public class RsaUtils {
             }
             encoded =  decoder.decodeBuffer(privateKey);
         }
-
-        // 解密操作
-        byte[] decryptedData = getDecryptedData(decode, encoded);
-
-        System.out.println(new String(decryptedData));
+        return encoded;
     }
 
 
-    private static String publicKeyEncryptedByteToString(PublicKeyEncryptionDto dto) {
-
-        // type true pkcs8   false pkcs1
-
-        boolean type = false;
-
-        byte[] bytes = publicKeyEncryption(dto.getText(), dto.getPublicKey(), type);
-
-        // 通过base64 再次将字节数组进行base64编码 得到String字符串文本
-        String byte2Base64 = java.util.Base64.getEncoder().encodeToString(bytes);
-        return byte2Base64;
-    }
-
-    private static byte[] getDecryptedData(byte[] decode, byte[] encoded) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
-        PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(encoded);
-        KeyFactory keyFactory = KeyFactory.getInstance(RSA_ALGORITHM);
-        Key privateK = keyFactory.generatePrivate(pkcs8KeySpec);
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
-        cipher.init(Cipher.DECRYPT_MODE, privateK);
-        int inputLen = decode.length;
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        int offSet = 0;
-        byte[] cache;
-        int i = 0;
-        while (inputLen - offSet > 0) {
-            if (inputLen - offSet > MAX_DECRYPT_BLOCK) {
-                cache = cipher.doFinal(decode, offSet, MAX_DECRYPT_BLOCK);
-            } else {
-                cache = cipher.doFinal(decode, offSet, inputLen - offSet);
-            }
-            out.write(cache, 0, cache.length);
-            i++;
-            offSet = i * MAX_DECRYPT_BLOCK;
-        }
-        byte[] decryptedData = out.toByteArray();
-        out.close();
-        return decryptedData;
-    }
 
 
-    private static byte[] getEncryptedData(String publicKey, byte[] contextBytes) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
-        if (HexUtil.isHexNumber(publicKey)) {
-            publicKey = Hex2Util.decodeHex(publicKey);
-        }
-        BASE64Decoder decoder = new BASE64Decoder();
-        byte[] bytes = decoder.decodeBuffer(publicKey);
 
-        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(bytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(RSA_ALGORITHM);
-        Key publicK = keyFactory.generatePublic(x509KeySpec);
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
-        cipher.init(Cipher.ENCRYPT_MODE, publicK);
-        int inputLen = contextBytes.length;
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        int offSet = 0;
-        byte[] cache;
-        int i = 0;
-        while (inputLen - offSet > 0) {
-            if (inputLen - offSet > MAX_ENCRYPT_BLOCK) {
-                cache = cipher.doFinal(contextBytes, offSet, MAX_ENCRYPT_BLOCK);
-            } else {
-                cache = cipher.doFinal(contextBytes, offSet, inputLen - offSet);
-            }
-            out.write(cache, 0, cache.length);
-            i++;
-            offSet = i * MAX_ENCRYPT_BLOCK;
-        }
-        byte[] encryptedData = out.toByteArray();
-        out.close();
-        return encryptedData;
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Pkcs8转Pkcs1
@@ -483,6 +498,64 @@ public class RsaUtils {
         list.add(privateKey);
         return list;
     }
+
+
+    /**
+     * pkcs1 转 pkcs8   公钥
+     * @param rawKey
+     * @return
+     * @throws Exception
+     */
+    public static byte[] formatPkcs1ToPkcs8(String rawKey) throws Exception {
+        BASE64Decoder decoder = new BASE64Decoder();
+        BASE64Encoder encoder = new BASE64Encoder();
+        byte[] bytes = decoder.decodeBuffer(rawKey);
+        AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(PKCSObjectIdentifiers.pkcs8ShroudedKeyBag);
+        ASN1Object asn1Object = ASN1ObjectIdentifier.fromByteArray(bytes);
+        SubjectPublicKeyInfo publicKeyInfo = new SubjectPublicKeyInfo(algorithmIdentifier,asn1Object);
+
+       return publicKeyInfo.getEncoded();
+
+        // return encoder.encode(encoded);
+//        PrivateKeyInfo privKeyInfo = new PrivateKeyInfo(algorithmIdentifier, asn1Object);
+//        byte[] pkcs8Bytes = privKeyInfo.getEncoded();
+//        return encoder.encode(pkcs8Bytes);
+    }
+
+
+    /**
+     * 完成测试  pkcs8  base64 输出
+     *
+     * @return
+     */
+    public static List<String> pkcs1containSecretToBase64() {
+
+        List<String> list = Lists.newArrayList();
+        String publicKey = "-----BEGIN -----\n" +
+                "MIGJAoGBAISKY9FF5UEmIX7Yap4UobqUT6hw8dAK/IkX3vQI5SXW398OJjzf0kIA\n" +
+                "NNLqtWPsmE4JJSIo4eUA7aQSwxGpkvxdMonKz0wi5BdHW+KB9tCGu4Ji7FlmYUqS\n" +
+                "u0c05wsCFxxwXbHwEjLflGqf19/XC/0/U8et61yPaoV4hSslOCZzAgMBAAE=\n" +
+                "-----END -----";
+        String privateKey = "-----BEGIN -----\n" +
+                "MIICXAIBAAKBgQCEimPRReVBJiF+2GqeFKG6lE+ocPHQCvyJF970COUl1t/fDiY8\n" +
+                "39JCADTS6rVj7JhOCSUiKOHlAO2kEsMRqZL8XTKJys9MIuQXR1vigfbQhruCYuxZ\n" +
+                "ZmFKkrtHNOcLAhcccF2x8BIy35Rqn9ff1wv9P1PHretcj2qFeIUrJTgmcwIDAQAB\n" +
+                "AoGABxQM+KQu9ie/KjMMnpyjdn9tMaW2hFHR4tBvi8Dd3AN5uUPcLuwVIok4SPtX\n" +
+                "7Jo6GBDM9uIQDlbaWiTWXh8cRmIA2AK62LaFtqcYC6XTdGN4gfqInKyYPRcV9kuK\n" +
+                "/2Zk3PzH6OZtc7T9u4pZwhwrnCNxaQlgszq+c48Ti+Y6ZcECQQDdkyccS+eb590R\n" +
+                "HctbJoVvDf1XkD3zbeNmFBup4SHZVsM+aVh3Qk3m72Mxf4ZNFXchWzfsEOYuNOUd\n" +
+                "TLgz+k3JAkEAmSIEgT+OjrUL7THk/CnzZlBgQCAwIiJiQAgz6uRXpj7I1lBi9LC5\n" +
+                "yNmnK0BTQPylMuw9DFUBZE4IsU1L5oqAWwJAYFermdInUtLufJLH6UpGmpMqpPhC\n" +
+                "96XASpJTtPn/DdF785c6sCBUXyWXq94XN00uD4LqPerbKxw0wxiov3EGgQJAa+KH\n" +
+                "gfehG/F5gZbRWMbFcKPX69XBk4rd5Xbh/O76wWkiXbssvG91tIeDOvmKrhJQ4NuG\n" +
+                "9xU8ccp4XVGz06xoWQJBAMTc1iK0sbRoYa05c6AE6QEQ8ndUJDuzYHH3US7z7vXw\n" +
+                "5O1hYhLsFn1I3HXQqrJS+3BdmtSwoALWsU+xYtUzwVs=\n" +
+                "-----END -----";
+        list.add(publicKey);
+        list.add(privateKey);
+        return list;
+    }
+
 
 
     /**

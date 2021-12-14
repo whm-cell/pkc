@@ -58,5 +58,10 @@ public class PublicKeyEncryptionDto {
      */
     private String secretKey;
 
+    /**
+     * 是否为pkcs8 秘钥
+     */
+    private boolean type;
+
 
 }

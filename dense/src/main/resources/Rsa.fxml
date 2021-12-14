@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fx.dense.controller.rsa.RsaController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fx.dense.controller.rsa.RsaController">
     <children>
         <AnchorPane prefHeight="43.0" prefWidth="1271.0" style="-fx-background-color: #8CD584;">
             <children>
@@ -15,29 +20,33 @@
                 <Label layoutX="814.0" layoutY="13.0" text="字符集：" />
                 <ChoiceBox fx:id="characterSet" layoutX="865.0" layoutY="4.0" prefHeight="28.0" prefWidth="124.0" />
                 <Label layoutX="430.0" layoutY="14.0" prefHeight="15.0" prefWidth="87.0" text="超长分割字符：" />
-                <TextField fx:id="extraLongSplitCharacter" layoutX="517.0" layoutY="7.0" prefHeight="26.0" prefWidth="150.0" text="::" />
-                <ChoiceBox fx:id="veryLongText" layoutX="294.0" layoutY="6.0" prefHeight="28.0" prefWidth="108.0" />
+                <TextField fx:id="extraLongSplitCharacter" disable="true" layoutX="517.0" layoutY="7.0" prefHeight="26.0" prefWidth="150.0" text="::" />
+                <ChoiceBox fx:id="veryLongText" disable="true" layoutX="294.0" layoutY="6.0" prefHeight="28.0" prefWidth="108.0" />
+            <Label layoutX="1000.0" layoutY="12.0" prefHeight="15.0" prefWidth="60.0" text="私钥密码：" />
+            <TextField fx:id="secretKey" layoutX="1057.0" layoutY="5.0" prefHeight="26.0" prefWidth="150.0" promptText="私钥解密时，使用 " />
             </children>
         </AnchorPane>
         <AnchorPane layoutX="-3.0" layoutY="217.0" prefHeight="238.0" prefWidth="1271.0" style="-fx-background-color: #EFF7EE;">
             <children>
                 <Label layoutX="15.0" layoutY="20.0" text="待加密、解密的文本：" />
-                <TextArea fx:id="text" layoutX="19.0" layoutY="40.0" prefHeight="196.0" prefWidth="1246.0" promptText="海明牛皮" />
+                <TextArea fx:id="context" layoutX="19.0" layoutY="40.0" prefHeight="196.0" prefWidth="1246.0" promptText="结果" />
             </children>
         </AnchorPane>
         <AnchorPane layoutX="-3.0" layoutY="453.0" prefHeight="286.0" prefWidth="1271.0" style="-fx-background-color: #DFECDE;">
             <children>
                 <Label layoutX="14.0" layoutY="17.0" text="RSA加密、解密转换结果(base64了)：" />
-                <TextArea fx:id="privateKey" layoutX="19.0" layoutY="45.0" prefHeight="235.0" prefWidth="1244.0" promptText="result..." />
+                <TextArea fx:id="privateKey" layoutX="19.0" layoutY="45.0" prefHeight="214.0" prefWidth="1244.0" promptText="私钥部分（目前仅支持pkcs8私钥（含加密） 及 pkcs1私钥（不含加密）的加密运算" />
                 <Button fx:id="en" layoutX="496.0" layoutY="12.0" mnemonicParsing="false" onAction="#enMethod" text="RSA加密" />
                 <Button fx:id="de" layoutX="579.0" layoutY="12.0" mnemonicParsing="false" onAction="#deMethod" text="RSA解密" />
                 <Button fx:id="copyResult" layoutX="659.0" layoutY="12.0" mnemonicParsing="false" onAction="#copyResultMethod" text="复制结果" />
+            <Label layoutX="442.0" layoutY="265.0" prefHeight="15.0" prefWidth="326.0" text="技术能力有限 此页面部分功能被阉割，持续完善中。。。" />
             </children>
         </AnchorPane>
         <AnchorPane layoutX="-2.0" layoutY="43.0" prefHeight="192.0" prefWidth="1271.0" style="-fx-background-color: #EFF7EE;">
             <children>
                 <Label layoutX="14.0" layoutY="3.0" text="输入加密公钥（以“-----BEGIN PUBLIC KEY-----”开头 “-----END PUBLIC KEY-----” 结尾）:" />
-                <TextArea fx:id="publicKey" layoutX="17.0" layoutY="19.0" prefHeight="158.0" prefWidth="1247.0" promptText="海明牛皮" />
+                <TextArea fx:id="publicKey" layoutX="17.0" layoutY="19.0" prefHeight="158.0" prefWidth="1247.0" promptText="公钥" />
+            <CheckBox fx:id="pkcs1" layoutX="513.0" layoutY="2.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="124.0" text="pkcs1模式时勾选" />
             </children>
         </AnchorPane>
     </children>

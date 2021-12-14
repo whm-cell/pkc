@@ -4,6 +4,7 @@ import com.fx.dense.base.Const;
 import com.fx.dense.model.rsa.GenerateKeyPairDto;
 import com.fx.dense.utils.rsa.GenerateKeyPairUtils;
 import com.google.common.collect.Lists;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import javafx.collections.FXCollections;
@@ -42,6 +43,13 @@ public class GenerateKeyPairController implements Initializable {
 
     @FXML private TextArea respoText;
 
+    @FXML
+    JFXButton publicCopy;
+
+    @FXML
+    JFXButton privateCopy;
+
+
     public void generate(ActionEvent event){
 
         try{
@@ -73,6 +81,20 @@ public class GenerateKeyPairController implements Initializable {
             e.getCause();
         }
     }
+
+
+    public void publicCopyAction(ActionEvent event){
+        requText.selectAll();
+        requText.copy();
+    }
+
+
+
+    public void privateCopyAction(ActionEvent event){
+        respoText.selectAll();
+        respoText.copy();
+    }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
