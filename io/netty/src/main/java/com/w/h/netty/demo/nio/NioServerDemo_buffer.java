@@ -1,4 +1,4 @@
-package com.w.h.netty.demo;
+package com.w.h.netty.demo.nio;
 
 import java.nio.Buffer;
 import java.nio.IntBuffer;
@@ -9,7 +9,7 @@ import java.nio.IntBuffer;
  * @author: WangHaiMing
  * @create: 2021-12-15 17:19
  **/
-public class NioServerDemo_buffer {
+public class  NioServerDemo_buffer {
 
     public static void main(String[] args) {
         // 举例说明buffer的使用

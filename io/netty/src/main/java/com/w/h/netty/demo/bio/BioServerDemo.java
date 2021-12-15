@@ -1,4 +1,4 @@
-package com.w.h.netty.demo;
+package com.w.h.netty.demo.bio;
 
 import java.io.IOException;
 import java.io.InputStream;
