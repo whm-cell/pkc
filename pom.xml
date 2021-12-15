@@ -19,7 +19,7 @@
         <module>pdd</module>
         <module>dense</module>
         <module>oauth2-code</module>
-<!--        <module>mq</module>-->
+        <module>io</module>
     </modules>
 
     <properties>
