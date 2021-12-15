@@ -1,6 +1,7 @@
 package com.fx.dense.controller;
 
 import com.fx.dense.logback.ConsoleLogAppender;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -174,7 +175,7 @@ public class HomeController implements Initializable {
     /**** close screen ****/
     @FXML
     public void closeAction(MouseEvent event) throws IOException {
-
+        Platform.exit();
         System.exit(0);
     }
 }

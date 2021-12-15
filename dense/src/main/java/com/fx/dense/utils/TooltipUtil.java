@@ -1,5 +1,6 @@
 package com.fx.dense.utils;
 
+import com.fx.dense.utils.encryption.GetScreenUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -12,9 +13,6 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.controlsfx.control.Notifications;
 import org.controlsfx.tools.Utils;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;

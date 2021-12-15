@@ -1,4 +1,4 @@
-package com.fx.dense.utils;
+package com.fx.dense.utils.encryption;
 
 import org.bouncycastle.util.encoders.Hex;
 

@@ -1,14 +1,10 @@
-package com.fx.dense.utils.rsa;
+package com.fx.dense.utils.encryption.rsa;
 
-import cn.hutool.core.util.HexUtil;
 import com.fx.dense.base.Const;
 import com.fx.dense.exception.BusinessException;
-import com.fx.dense.model.rsa.GenerateKeyPairDto;
 import com.fx.dense.model.rsa.PublicKeyEncryptionDto;
-import com.fx.dense.utils.Hex2Util;
-import com.google.common.collect.Maps;
+import com.fx.dense.utils.encryption.Hex2Util;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Base64Util;
 import org.assertj.core.util.Lists;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -17,26 +13,18 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Base64;
-import org.bouncycastle.util.encoders.Base64Encoder;
-import org.springframework.util.Base64Utils;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
-import javax.validation.constraints.NotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.*;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.*;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 
 /**

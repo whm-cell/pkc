@@ -2,8 +2,8 @@ package com.fx.dense.controller;
 
 import com.fx.dense.base.Const;
 import com.fx.dense.model.DesRequestModel;
-import com.fx.dense.utils.DesUtil;
-import com.fx.dense.utils.GenerateFileUtil;
+import com.fx.dense.utils.encryption.DesUtil;
+import com.fx.dense.utils.encryption.GenerateFileUtil;
 import com.fx.dense.utils.TooltipUtil;
 import com.google.common.collect.Lists;
 import javafx.event.ActionEvent;

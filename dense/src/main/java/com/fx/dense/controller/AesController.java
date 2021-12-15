@@ -2,8 +2,7 @@ package com.fx.dense.controller;
 
 import com.fx.dense.base.Const;
 import com.fx.dense.model.AesRequestModel;
-import com.fx.dense.utils.AesUtil;
-import com.fx.dense.utils.DesUtil;
+import com.fx.dense.utils.encryption.AesUtil;
 import com.fx.dense.utils.TooltipUtil;
 import com.google.common.collect.Lists;
 import javafx.event.ActionEvent;

@@ -1,4 +1,4 @@
-package com.fx.dense.utils;
+package com.fx.dense.utils.encryption;
 import com.fx.dense.exception.BusinessException;
 
 import java.io.File;

@@ -2,9 +2,7 @@ package com.fx.dense.controller.rsa;
 
 import com.fx.dense.base.Const;
 import com.fx.dense.model.rsa.GenerateKeyPairDto;
-import com.fx.dense.utils.rsa.GenerateKeyPairUtils;
-import com.google.common.collect.Lists;
-import com.jfoenix.controls.JFXButton;
+import com.fx.dense.utils.encryption.rsa.GenerateKeyPairUtils;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import javafx.collections.FXCollections;
@@ -15,7 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 

@@ -1,12 +1,11 @@
-package com.fx.dense.utils.rsa;
+package com.fx.dense.utils.encryption.rsa;
 
 
 
 
-import com.alibaba.fastjson.JSONObject;
 import com.fx.dense.base.Const;
 import com.fx.dense.model.rsa.GenerateKeyPairDto;
-import com.fx.dense.utils.Hex2Util;
+import com.fx.dense.utils.encryption.Hex2Util;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -18,35 +17,16 @@ import org.bouncycastle.openssl.PEMEncryptor;
 import org.bouncycastle.openssl.PKCS8Generator;
 import org.bouncycastle.openssl.jcajce.*;
 import org.bouncycastle.operator.OutputEncryptor;
-import org.bouncycastle.util.encoders.Hex;
 import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemWriter;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Signature;
-import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.HashMap;
 import java.util.Map;
-
-import javax.crypto.Cipher;
 
 import java.security.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @program: pkc

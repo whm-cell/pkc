@@ -13,7 +13,6 @@
     <name>dense</name>
 
 
-
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,15 +27,15 @@
         </dependency>
 
         <dependency>
-        <groupId>com.google.code.google-collections</groupId>
-        <artifactId>google-collect</artifactId>
-        <version>snapshot-20080530</version>
-    </dependency>
+            <groupId>com.google.code.google-collections</groupId>
+            <artifactId>google-collect</artifactId>
+            <version>snapshot-20080530</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.openjfx -->
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
@@ -57,22 +56,25 @@
             <artifactId>javafx-media</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-web</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.jfoenix/jfoenix -->
+
         <dependency>
             <groupId>com.jfoenix</groupId>
             <artifactId>jfoenix</artifactId>
@@ -88,7 +90,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
+
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
@@ -114,13 +116,12 @@
             <artifactId>hutool-all</artifactId>
             <version>4.6.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/exec-maven-plugin -->
-        <dependency>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.2.1</version>
-        </dependency>
 
+        <dependency>
+            <groupId>com.liferay</groupId>
+            <artifactId>org.apache.commons.configuration</artifactId>
+            <version>1.10.LIFERAY-PATCHED-2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -129,56 +130,56 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-           <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>copy-and-filter-allatori-config</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>allatori</directory>
-                                    <includes>
-                                        <include>allatori.xml</include>
-                                    </includes>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <id>run-allatori</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <executable>java</executable>
-                    <arguments>
-                        <argument>-Xms128m</argument>
-                        <argument>-Xmx512m</argument>
-                        <argument>-jar</argument>
-                        <argument>allatori/lib/allatori.jar</argument>
-                        <argument>${basedir}/target/allatori.xml</argument>
-                    </arguments>
-                </configuration>
-            </plugin>-->
+            <!-- <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-resources-plugin</artifactId>
+                 <version>2.6</version>
+                 <executions>
+                     <execution>
+                         <id>copy-and-filter-allatori-config</id>
+                         <phase>package</phase>
+                         <goals>
+                             <goal>copy-resources</goal>
+                         </goals>
+                         <configuration>
+                             <outputDirectory>${basedir}/target</outputDirectory>
+                             <resources>
+                                 <resource>
+                                     <directory>allatori</directory>
+                                     <includes>
+                                         <include>allatori.xml</include>
+                                     </includes>
+                                     <filtering>true</filtering>
+                                 </resource>
+                             </resources>
+                         </configuration>
+                     </execution>
+                 </executions>
+             </plugin>
+             <plugin>
+                 <groupId>org.codehaus.mojo</groupId>
+                 <artifactId>exec-maven-plugin</artifactId>
+                 <version>1.2.1</version>
+                 <executions>
+                     <execution>
+                         <id>run-allatori</id>
+                         <phase>package</phase>
+                         <goals>
+                             <goal>exec</goal>
+                         </goals>
+                     </execution>
+                 </executions>
+                 <configuration>
+                     <executable>java</executable>
+                     <arguments>
+                         <argument>-Xms128m</argument>
+                         <argument>-Xmx512m</argument>
+                         <argument>-jar</argument>
+                         <argument>allatori/lib/allatori.jar</argument>
+                         <argument>${basedir}/target/allatori.xml</argument>
+                     </arguments>
+                 </configuration>
+             </plugin>-->
 
 
         </plugins>

@@ -3,7 +3,6 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -63,7 +62,7 @@
         <children>
             <BorderPane prefHeight="794.0" prefWidth="1271.0">
                 <top>
-                    <MenuBar  prefHeight="26.0" prefWidth="1290.0" BorderPane.alignment="CENTER">
+                    <MenuBar prefHeight="26.0" prefWidth="1290.0" BorderPane.alignment="CENTER">
                         <menus>
                             <Menu mnemonicParsing="false" text="功能">
                                 <items>

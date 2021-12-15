@@ -1,26 +1,16 @@
-package com.fx.dense.utils;
+package com.fx.dense.utils.encryption;
 
 import com.fx.dense.base.Const;
 import com.fx.dense.exception.BusinessException;
 import com.fx.dense.model.AesRequestModel;
-import com.fx.dense.model.DesRequestModel;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import javax.crypto.*;
-import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 
 /**
  * @program: pkc
