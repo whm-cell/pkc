@@ -78,6 +78,17 @@
                                             </Menu>
                                         </items>
                                     </Menu>
+                              <Menu mnemonicParsing="false" text="小工具">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="模拟聊天室" />
+                                    <Menu mnemonicParsing="false" text="RSA加解密">
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" onAction="#goGenerateKeyRsa" text="生成密钥对RSA" />
+                                          <MenuItem fx:id="rsa1" mnemonicParsing="false" onAction="#goRsa" text="RSA" />
+                                       </items>
+                                    </Menu>
+                                 </items>
+                              </Menu>
                                 </items>
                             </Menu>
                             <Menu mnemonicParsing="false" text="关于">
