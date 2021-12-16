@@ -1,4 +1,4 @@
-package com.w.h.netty.demo.nio;
+package com.w.h.netty.demo.nio.buffer;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

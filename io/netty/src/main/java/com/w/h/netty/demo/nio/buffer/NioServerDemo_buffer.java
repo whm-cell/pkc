@@ -1,4 +1,4 @@
-package com.w.h.netty.demo.nio;
+package com.w.h.netty.demo.nio.buffer;
 
 import java.nio.Buffer;
 import java.nio.IntBuffer;
