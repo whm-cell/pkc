@@ -68,6 +68,7 @@ public class GroupChatClient {
             ByteBuffer wrap = ByteBuffer.wrap(info.getBytes());
             socketChannel.write(wrap);
 
+
         }catch (Exception e){
             e.printStackTrace();
             e.getCause();
