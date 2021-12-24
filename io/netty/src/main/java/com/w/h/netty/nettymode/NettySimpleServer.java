@@ -63,6 +63,14 @@ public class NettySimpleServer {
                          */
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
+                            System.out.println("客户对应的channel：  hashcode: " + ch.hashCode());
+
+                            /**
+                             * 这里可以使用一个集合  管理所有的socketChannel
+                             * 在需要推送消息时，可以将业务加入到各个channel对应的nioEventLoop的taskQueue
+                             * 或者scheduleTaskQueue中
+                             */
+
                             //  返回channel关联的pipeline
                             ChannelPipeline channelPipeline = ch.pipeline();
                             channelPipeline.addLast(new NettySimpleServerHandler()); // 向管道的最后，增加一个处理器

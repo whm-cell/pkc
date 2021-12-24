@@ -56,6 +56,20 @@ public class NettySimpleClient {
             ChannelFuture channelFuture = bootstrap.connect(new InetSocketAddress("127.0.0.1", 6668)).sync();
             //  涉及到netty的伊布模型
 
+            // 给 channelFuture 注册监听器 ，监控我们关心的事件
+            channelFuture.addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                    if (channelFuture.isSuccess()) {
+                        System.out.println("监听端口6668成功");
+                    }else {
+                        System.out.println("监听失败");
+                    }
+
+                }
+            });
+
+
             // 非阻塞的关闭监听.
             /**
              * 这里 不能直接使用 close()  这里关闭的时候，管道而不是通道 必须使用  closeFuture()

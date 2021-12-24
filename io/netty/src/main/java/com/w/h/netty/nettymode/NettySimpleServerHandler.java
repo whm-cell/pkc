@@ -10,6 +10,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.CharsetUtil;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @program: pkc
@@ -18,17 +19,6 @@ import java.nio.ByteBuffer;
  * @create: 2021-12-19 17:16
  **/
 public class NettySimpleServerHandler extends ChannelInboundHandlerAdapter{
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -47,7 +37,7 @@ public class NettySimpleServerHandler extends ChannelInboundHandlerAdapter{
      * */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("服务器读取现场: " + Thread.currentThread().getName());
+       /* System.out.println("服务器读取现场: " + Thread.currentThread().getName());
 
         System.out.println(" server ctx" + ctx);
 
@@ -66,7 +56,56 @@ public class NettySimpleServerHandler extends ChannelInboundHandlerAdapter{
         ByteBuf byteBuf = (ByteBuf) msg;
         System.out.println("客户端发送的消息是： " + byteBuf.toString(CharsetUtil.UTF_8));
 
-        System.out.println("客户端地址：" + ctx.channel().remoteAddress());
+        System.out.println("客户端地址：" + ctx.channel().remoteAddress());*/
+
+        // 加入注释代码非常耗时
+        // 1. 希望异步执行   -> 提交到channel对应的 NIOEventLoop的taskQueue中->
+
+        /**
+         * 解决方案1  用户自定义的普通任务
+         * 如果此时在运行一个taskQueue  ，其实是一个线程在处理，这个线程会继续休眠20秒，然后继续执行其他的taskQueue
+         *
+         * 是同一个线程在运行
+         *
+         * 如果再调用  ctx.channel().eventLoop().execute(new Runnable() ，会同时存在两个taskQueue
+         */
+
+        /*ctx.channel().eventLoop().execute(new Runnable() {
+            @Override
+            public void run() {
+                try{
+
+                    Thread.sleep(10000);
+                    ctx.writeAndFlush(Unpooled.copiedBuffer("回送的话  客户端 瞄 2 ~~~~~",CharsetUtil.UTF_8));
+                    System.out.println("go on ... ");
+                }catch (Exception e){
+//                    e.getCause();
+//                    e.printStackTrace();
+                    System.out.println("发送异常: "+e.getMessage());
+                }
+            }
+        });*/
+
+
+        /**
+         * 解决方案二：  用户自定义定时任务
+         *    这种任务是提交到scheduleTashQueue
+         *
+         */
+        /*ctx.channel().eventLoop().schedule(new Runnable() {
+            @Override
+            public void run() {
+                try{
+
+                    Thread.sleep(10000);
+                    ctx.writeAndFlush(Unpooled.copiedBuffer("回送的话  客户端 瞄 4 ~~~~~",CharsetUtil.UTF_8));
+                    System.out.println("go on ... ");
+                }catch (Exception e){
+                    System.out.println("发送异常: "+e.getMessage());
+                }
+            }
+        },5, TimeUnit.SECONDS);*/
+
 
 
 
@@ -74,7 +113,7 @@ public class NettySimpleServerHandler extends ChannelInboundHandlerAdapter{
 
     /**
      * 代表数据读取完毕
-     数据读取完毕 直接恢复消息
+     数据读取完毕 直接回复消息
      * @param ctx
      * @throws Exception
      */
@@ -87,7 +126,7 @@ public class NettySimpleServerHandler extends ChannelInboundHandlerAdapter{
          需要将字符串编码
          */
 
-        ctx.writeAndFlush(Unpooled.copiedBuffer("hallo 客户端~~~~",CharsetUtil.UTF_8));
+        ctx.writeAndFlush(Unpooled.copiedBuffer("hallo 客户端~~~~1",CharsetUtil.UTF_8));
 
     }
 
