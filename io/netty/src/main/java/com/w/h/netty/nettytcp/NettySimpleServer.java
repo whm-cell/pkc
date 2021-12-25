@@ -1,11 +1,10 @@
-package com.w.h.netty.nettymode;
+package com.w.h.netty.nettytcp;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
  * @program: pkc
@@ -50,6 +49,8 @@ public class NettySimpleServer {
                     .option(ChannelOption.SO_BACKLOG,128)
                     //  这是保持活动连接状态
                     .childOption(ChannelOption.SO_KEEPALIVE,true)
+                    // 该handler对应的是bossGroup ，也就是说这个handler会在bossGroup生效、
+                    // .handler(null)
                     // 给workerGroup的EventLoop的对应管道设置处理器
                     .childHandler(new ChannelInitializer<SocketChannel>() {
 

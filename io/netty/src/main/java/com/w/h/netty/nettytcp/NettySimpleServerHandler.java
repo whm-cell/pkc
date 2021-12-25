@@ -1,16 +1,9 @@
-package com.w.h.netty.nettymode;
+package com.w.h.netty.nettytcp;
 
-import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.CharsetUtil;
-
-import java.nio.ByteBuffer;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @program: pkc
@@ -37,7 +30,7 @@ public class NettySimpleServerHandler extends ChannelInboundHandlerAdapter{
      * */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-       /* System.out.println("服务器读取现场: " + Thread.currentThread().getName());
+        System.out.println("服务器读取现场: " + Thread.currentThread().getName());
 
         System.out.println(" server ctx" + ctx);
 
@@ -56,7 +49,7 @@ public class NettySimpleServerHandler extends ChannelInboundHandlerAdapter{
         ByteBuf byteBuf = (ByteBuf) msg;
         System.out.println("客户端发送的消息是： " + byteBuf.toString(CharsetUtil.UTF_8));
 
-        System.out.println("客户端地址：" + ctx.channel().remoteAddress());*/
+        System.out.println("客户端地址：" + ctx.channel().remoteAddress());
 
         // 加入注释代码非常耗时
         // 1. 希望异步执行   -> 提交到channel对应的 NIOEventLoop的taskQueue中->

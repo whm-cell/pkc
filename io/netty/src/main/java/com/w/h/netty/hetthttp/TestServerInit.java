@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.HttpServerCodec;
 
 /**
  * @program: pkc
@@ -24,6 +25,14 @@ public class TestServerInit extends ChannelInitializer<SocketChannel> {
         ChannelPipeline pipeline = socketChannel.pipeline();
 
         // 加入一个netty提供的httpServerCodeC   CodeC = > [code  -> decoder ]
+        /**
+         * 1. HttpServerCodec  这是netty提供的处理http的编码解码器
+         *
+         * 2、增加一个自定义的处理器
+         */
+        pipeline.addLast("myHttpServerCodeC",new HttpServerCodec());
+        pipeline.addLast("myTestHeepServerHandler",new TestHeepServerHandler());
+
 
     }
 }

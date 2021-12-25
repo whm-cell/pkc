@@ -27,10 +27,10 @@ public class TestServer {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
 
             serverBootstrap.group(bossGroup,workerGroup).channel(NioServerSocketChannel.class)
-                    .childHandler(null);
+                    .childHandler(new TestServerInit());
 
             // 异步处理
-            ChannelFuture channelFuture = serverBootstrap.bind(6668).sync();
+            ChannelFuture channelFuture = serverBootstrap.bind(8887).sync();
 
 
             channelFuture.channel().closeFuture().sync();

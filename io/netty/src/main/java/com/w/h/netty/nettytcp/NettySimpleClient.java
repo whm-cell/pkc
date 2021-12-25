@@ -1,4 +1,4 @@
-package com.w.h.netty.nettymode;
+package com.w.h.netty.nettytcp;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
