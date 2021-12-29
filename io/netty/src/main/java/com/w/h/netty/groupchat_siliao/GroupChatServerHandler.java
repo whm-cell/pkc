@@ -1,12 +1,16 @@
-package com.w.h.netty.groupchat;
+package com.w.h.netty.groupchat_siliao;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @program: pkc
@@ -20,12 +24,18 @@ import java.util.Date;
 public class GroupChatServerHandler extends SimpleChannelInboundHandler<String> {
 
 
+    /**
+     * // 私聊部分 ：  channel使用hashMap管理
+     */
+    public static Map<String,Channel> channels = new HashMap<>();
+    public static Map<User,Channel> channels2 = new HashMap<>();
+
     //    先定义一个channel组  管理所有的channel
     /**
      * DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
      * 全局的时间执行器   单例  ！
      */
-    private static ChannelGroup channelGroup = new  DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+     private static ChannelGroup channelGroup = new  DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -44,9 +54,14 @@ public class GroupChatServerHandler extends SimpleChannelInboundHandler<String> 
         channelGroup.writeAndFlush 会将channelGroup中所有的channel遍历并发送该消息
          因此无需自己遍历
          */
-        channelGroup.writeAndFlush("【客户端】"+channel.remoteAddress()+"加入聊天 "+sdf.format(new Date())+" \n");
+        // channelGroup.writeAndFlush("【客户端】"+channel.remoteAddress()+"加入聊天 "+sdf.format(new Date())+" \n");
 
-        channelGroup.add(channel);
+        //channelGroup.add(channel);
+
+        channels.put("id100",channel);
+
+        // 这里引入无状态连接
+//        channels2.put(new User(10,"123"),channel);
 
     }
     /**

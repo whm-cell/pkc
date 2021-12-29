@@ -1,4 +1,4 @@
-package com.w.h.netty.groupchat;
+package com.w.h.netty.groupchat_siliao;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
