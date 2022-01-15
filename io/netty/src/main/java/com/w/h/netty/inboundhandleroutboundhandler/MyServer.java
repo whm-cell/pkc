@@ -13,7 +13,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  * @author: whm
  * @create: 2022-01-05 21:19
  **/
-public class MyServer {
+public class  MyServer {
 
     public static void main(String[] args) throws InterruptedException {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
@@ -26,7 +26,7 @@ public class MyServer {
                     .channel(NioServerSocketChannel.class)
 
                     // 自定义一个初始化类
-                    .childHandler(null);
+                    .childHandler(new MyServerInitialzer());
 
 
             ChannelFuture channelFuture = bootstrap.bind(7000).sync();
