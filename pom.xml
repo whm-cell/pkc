@@ -17,6 +17,7 @@
     <modules>
         <module>oauth</module>
         <module>pdd</module>
+        <module>pxx</module>
         <module>dense</module>
         <module>oauth2-code</module>
         <module>io</module>
